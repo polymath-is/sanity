@@ -8,6 +8,7 @@ import ToolSwitcher from 'part:@sanity/default-layout/tool-switcher'
 import SearchIcon from 'part:@sanity/base/search-icon'
 import {StateLink} from 'part:@sanity/base/router'
 import * as sidecar from 'part:@sanity/default-layout/sidecar?'
+import PresenceStatus from 'part:@sanity/components/presence/presence-status'
 import {HAS_SPACES} from '../util/spaces'
 import Branding from './Branding'
 import LoginStatus from './LoginStatus'
@@ -110,6 +111,9 @@ function NavBar(props) {
       <div className={styles.extras}>{/* Insert plugins here */}</div>
       <div className={styles.sanityStatus}>
         <SanityStatusContainer />
+      </div>
+      <div className={styles.presenceStatus}>
+        <PresenceStatus />
       </div>
       <div className={styles.loginStatus} ref={onSetLoginStatusElement}>
         <LoginStatus onLogout={onUserLogout} user={user} />

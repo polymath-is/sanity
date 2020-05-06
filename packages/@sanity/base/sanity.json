@@ -387,6 +387,18 @@
       "path": "datastores/user"
     },
     {
+      "name": "part:@sanity/base/presence",
+      "path": "datastores/presence"
+    },
+    {
+      "name": "part:@sanity/base/hooks/presence",
+      "path": "hooks/usePresence"
+    },
+    {
+      "name": "part:@sanity/base/hooks/collaborators",
+      "path": "hooks/useCollaborators"
+    },
+    {
       "name": "part:@sanity/base/project",
       "path": "datastores/project"
     },
@@ -930,6 +942,10 @@
     {
       "implements": "part:@sanity/base/launch-icon",
       "path": "components/icons/Launch.js"
+    },
+    {
+      "implements": "part:@sanity/base/users-icon",
+      "path": "components/icons/UsersIcon.js"
     },
     {
       "implements": "part:@sanity/base/sanity-logo",

@@ -1095,6 +1095,10 @@
     {
       "implements": "part:@sanity/components/tabs/tab-panel",
       "path": "tabs/TabPanel.js"
+    },
+    {
+      "name": "part:@sanity/components/presence/presence-status",
+      "path": "presence/GlobalStatus"
     }
   ]
 }

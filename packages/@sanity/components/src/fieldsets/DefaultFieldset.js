@@ -7,6 +7,9 @@ import ArrowDropDown from 'part:@sanity/base/arrow-drop-down'
 import ValidationStatus from 'part:@sanity/components/validation/status'
 import ValidationList from 'part:@sanity/components/validation/list'
 import AnimateHeight from 'react-animate-height'
+import {Container as PresenceContainer} from '../presence'
+import FieldStatus from './FieldStatus'
+import {FOCUS_TERMINATOR} from '@sanity/util/paths'
 
 export default class Fieldset extends React.Component {
   static propTypes = {
@@ -26,7 +29,8 @@ export default class Fieldset extends React.Component {
     tabIndex: PropTypes.number,
     transparent: PropTypes.bool,
     styles: PropTypes.object,
-    markers: PropTypes.array
+    markers: PropTypes.array,
+    presence: PropTypes.any
   }
 
   static defaultProps = {
@@ -37,6 +41,10 @@ export default class Fieldset extends React.Component {
     isCollapsed: false,
     isCollapsible: false // can collapsing be toggled by user?
   }
+
+  _instanceId = Math.random()
+    .toString(32)
+    .substring(2)
 
   constructor(props) {
     super()
@@ -52,6 +60,12 @@ export default class Fieldset extends React.Component {
       isCollapsed: !prevState.isCollapsed,
       hasBeenToggled: true
     }))
+
+    // Let parent know field has been toggled
+    const {onFocus} = this.props
+    if (onFocus) {
+      onFocus([FOCUS_TERMINATOR])
+    }
   }
 
   handleFocus = event => {
@@ -89,6 +103,7 @@ export default class Fieldset extends React.Component {
       tabIndex,
       transparent,
       markers,
+      presence,
       ...rest
     } = this.props
 
@@ -154,9 +169,10 @@ export default class Fieldset extends React.Component {
                   </p>
                 )}
               </div>
-              <div className={styles.headerStatus}>
+              <FieldStatus>
+                <PresenceContainer presence={presence} />
                 <ValidationStatus markers={markers} onClick={this.handleToggleValidationList} />
-              </div>
+              </FieldStatus>
             </div>
             {showValidationList && (
               <div className={styles.validationList}>

@@ -7,7 +7,11 @@ import DefaultLabel from 'part:@sanity/components/labels/default'
 import ValidationStatus from 'part:@sanity/components/validation/status'
 import ValidationList from 'part:@sanity/components/validation/list'
 import AnimateHeight from 'react-animate-height'
+import FieldStatus from '../fieldsets/FieldStatus'
+import {Container as PresenceContainer} from '../presence'
+import {Box} from '@sanity/overlayer'
 
+const ENABLE_CONTEXT = () => {}
 export default class DefaultFormField extends React.PureComponent {
   static propTypes = {
     label: PropTypes.string,
@@ -22,13 +26,23 @@ export default class DefaultFormField extends React.PureComponent {
       PropTypes.shape({
         type: PropTypes.string
       })
-    )
+    ),
+    presence: PropTypes.any
   }
 
   static defaultProps = {
     level: 1,
     markers: []
   }
+
+  static contextTypes = {
+    formBuilder: ENABLE_CONTEXT,
+    getValuePath: PropTypes.func
+  }
+
+  _instanceId = Math.random()
+    .toString(32)
+    .substring(2)
 
   state = {
     showValidationMessages: false
@@ -38,6 +52,10 @@ export default class DefaultFormField extends React.PureComponent {
     this.setState(prevState => ({
       showValidationMessages: !prevState.showValidationMessages
     }))
+  }
+
+  getValuePath() {
+    return this.context.getValuePath()
   }
 
   render() {
@@ -50,13 +68,11 @@ export default class DefaultFormField extends React.PureComponent {
       inline,
       wrapped,
       className,
-      markers
+      markers,
+      presence
     } = this.props
-
     const {showValidationMessages} = this.state
-
     const levelClass = `level_${level}`
-
     return (
       <div
         className={`
@@ -76,11 +92,12 @@ export default class DefaultFormField extends React.PureComponent {
                 )}
                 {description && <div className={styles.description}>{description}</div>}
               </div>
-              <div className={styles.headerStatus}>
+              <FieldStatus>
+                <PresenceContainer presence={presence} />
                 <div onClick={this.handleToggleShowValidation} className={styles.validationStatus}>
                   <ValidationStatus markers={markers} />
                 </div>
-              </div>
+              </FieldStatus>
             </div>
           )}
           <AnimateHeight

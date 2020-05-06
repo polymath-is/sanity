@@ -1,9 +1,10 @@
 import React, {useState} from 'react'
 import AvatarCircle from './AvatarCircle'
 import {Position, Size, Status, Collaborator} from './types'
+import {User} from './types'
 
 export type Props = {
-  user: Collaborator
+  user: User
   color?: string
   fillColor?: string
   position?: Position

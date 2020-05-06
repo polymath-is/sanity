@@ -2,25 +2,25 @@ import React from 'react'
 import UsersIcon from 'part:@sanity/base/users-icon'
 import styles from './GlobalStatus.css'
 import PopoverList from './PopoverList'
-import AvatarProvider from './UserAvatar'
 import {MAX_AVATARS} from './constants'
 import {splitRight} from './utils'
 import {uniqBy} from 'lodash'
 import StackCounter from './StackCounter'
 import {Collaborator} from './types'
+import UserAvatar from './UserAvatar'
 
 interface Props {
   projectId: string
-  users: Collaborator[]
+  collaborators: Collaborator[]
 }
 
-export default function GlobalStatus({projectId, users}: Props) {
-  const [hiddenUsers, visibleUsers] = splitRight(uniqBy(users, user => user.identity))
-  const showCounter = hiddenUsers.length >= MAX_AVATARS - 1 || users.length === 0
+export default function GlobalStatus({projectId, collaborators}: Props) {
+  const [hiddenUsers, visibleUsers] = splitRight(collaborators, 1)
+  const showCounter = hiddenUsers.length >= MAX_AVATARS - 1 || collaborators.length === 0
   return (
     <div className={styles.root}>
       <PopoverList
-        userList={users}
+        collaborators={collaborators}
         avatarSize="medium"
         isGlobal
         projectId={projectId}
@@ -30,7 +30,7 @@ export default function GlobalStatus({projectId, users}: Props) {
           {/* Only show this on mobile */}
           <div className={styles.mobileContent}>
             <div className={styles.icon}>
-              {users.length > 0 && (
+              {collaborators.length > 0 && (
                 <div className={styles.statusIndicator} aria-label={`Online collaborators`} />
               )}
               <UsersIcon />
@@ -39,9 +39,9 @@ export default function GlobalStatus({projectId, users}: Props) {
           {/* Show avatars laid out like on a field */}
           <div className={styles.avatars}>
             {showCounter && <StackCounter count={hiddenUsers.length} />}
-            {visibleUsers.map(user => (
-              <div className={styles.avatarOverlap} key={user.identity}>
-                <AvatarProvider userId={user.identity} fillColor="currentColor" color="#ea5fb1" />
+            {visibleUsers.map(collaborator => (
+              <div className={styles.avatarOverlap} key={collaborator.user.id}>
+                <UserAvatar user={collaborator.user} fillColor="currentColor" color="#ea5fb1" />
               </div>
             ))}
           </div>

@@ -8,10 +8,13 @@ import {
   withLatestFrom,
   mergeMapTo,
   switchMap,
-  mergeMap
+  mergeMap,
+  toArray
 } from 'rxjs/operators'
-import {groupBy, omit} from 'lodash'
+import {groupBy, omit, flatten} from 'lodash'
 import {createReflectorTransport} from './message-transports/reflectorTransport'
+import {Collaborator} from '../../presence'
+import userStore from '../user'
 
 export const CLIENT_ID = Math.random()
   .toString(32)
@@ -113,5 +116,36 @@ export const clients$ = merge(
         sessions: grouped[identity].map((session: any) => omit(session, 'identity'))
       }
     })
+  ),
+  tap(console.log)
+)
+const append = (list, item) => [...list, item]
+
+export const collaborators$ = clients$.pipe(
+  mergeMap(grouped =>
+    from(grouped).pipe(
+      mergeMap(sess =>
+        // @ts-ignore
+        from(userStore.getUser(sess.identity)).pipe(
+          map(
+            (user): Collaborator => ({
+              // @ts-ignore
+              user: user,
+              sessions: flatten(
+                // @ts-ignore
+                sess.sessions.map(s => ({
+                  sessionId: s.clientId,
+                  locations: (s.state || []).map(state => ({
+                    documentId: state.documentId,
+                    path: state.path
+                  }))
+                }))
+              )
+            })
+          )
+        )
+      ),
+      toArray()
+    )
   )
 )

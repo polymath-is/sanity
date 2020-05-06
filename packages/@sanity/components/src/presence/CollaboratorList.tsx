@@ -43,7 +43,9 @@ function CollaboratorList({
   position,
   avatarComponent: AvatarComponent
 }: ContainerProps) {
-  const [hiddenUsers, visibleUsers] = splitRight(uniqBy(collaborators || [], user => user.identity))
+  const [hiddenUsers, visibleUsers] = splitRight(
+    uniqBy(collaborators || [], collaborator => collaborator.user.id)
+  )
 
   const avatars = [
     ...visibleUsers.map(user => ({
@@ -65,7 +67,7 @@ function CollaboratorList({
 
   return (
     <div className={styles.root}>
-      <PopoverList userList={collaborators} disabled={hiddenUsers.length <= 1}>
+      <PopoverList collaborators={collaborators} disabled={hiddenUsers.length <= 1}>
         <div className={styles.inner} style={{height: AVATAR_WIDTH, minWidth: width}}>
           {avatars.map((av, i) => (
             <div

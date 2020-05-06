@@ -8,7 +8,6 @@ import ToolSwitcher from 'part:@sanity/default-layout/tool-switcher'
 import SearchIcon from 'part:@sanity/base/search-icon'
 import {StateLink} from 'part:@sanity/base/router'
 import * as sidecar from 'part:@sanity/default-layout/sidecar?'
-import PresenceStatus from 'part:@sanity/components/presence/presence-status'
 import {HAS_SPACES} from '../util/spaces'
 import Branding from './Branding'
 import LoginStatus from './LoginStatus'
@@ -16,6 +15,7 @@ import SanityStatusContainer from './SanityStatusContainer'
 import SearchContainer from './SearchContainer'
 import SpaceSwitcher from './SpaceSwitcher'
 import styles from './styles/NavBar.css'
+import {GlobalPresence} from './GlobalPresence'
 
 let isSidecarEnabled
 let SidecarToggleButton
@@ -113,7 +113,7 @@ function NavBar(props) {
         <SanityStatusContainer />
       </div>
       <div className={styles.presenceStatus}>
-        <PresenceStatus />
+        <GlobalPresence />
       </div>
       <div className={styles.loginStatus} ref={onSetLoginStatusElement}>
         <LoginStatus onLogout={onUserLogout} user={user} />

@@ -8,7 +8,7 @@ import CogIcon from 'part:@sanity/base/cog-icon'
 import {useId} from '@reach/auto-id'
 
 type Props = {
-  userList: Collaborator[]
+  collaborators: Collaborator[]
   avatarSize?: Size
   position?: 'top' | 'bottom'
   trigger?: 'mouseenter' | 'click' | 'manual'
@@ -20,7 +20,7 @@ type Props = {
 }
 
 export default function PopoverList({
-  userList = [],
+  collaborators = [],
   position = 'top',
   distance = 10,
   avatarSize,
@@ -62,20 +62,19 @@ export default function PopoverList({
       ref={menuRef}
       tabIndex={-1}
     >
-      {isGlobal && userList.length < 1 && (
+      {isGlobal && collaborators.length < 1 && (
         <div className={styles.header}>
           <h2 className={styles.title}>No one's here!</h2>
           <p className={styles.subtitle}>Invite more collaborators to see their online statuses.</p>
         </div>
       )}
-      {userList.length > 0 && (
+      {collaborators.length > 0 && (
         <ul className={styles.userList}>
-          {userList.map(user => (
-            <li key={user.sessionId}>
+          {collaborators.map(collaborator => (
+            <li key={collaborator.user.id}>
               <ListItem
-                id={user.identity}
-                status={user.status}
-                sessions={user?.sessions}
+                collaborator={collaborator}
+                status={collaborator.status}
                 size={avatarSize}
               />
             </li>

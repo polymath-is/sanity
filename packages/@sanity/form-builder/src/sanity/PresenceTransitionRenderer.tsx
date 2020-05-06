@@ -5,7 +5,7 @@
 import * as React from 'react'
 import {CSSProperties} from 'react'
 import {RegionIntersectionAssembler} from './RegionIntersectionAssembler'
-import {groupBy, orderBy} from 'lodash'
+import {groupBy, orderBy, flatten} from 'lodash'
 import {AvatarProvider, PopoverList, StackCounter} from '@sanity/components/lib/presence'
 import {DEBUG, THRESHOLD_TOP, MAX_AVATARS, AVATAR_WIDTH} from './constants'
 import {RegionWithIntersectionDetails} from './types'
@@ -142,10 +142,11 @@ function renderDock(
   position: 'top' | 'bottom',
   regionsWithIntersectionDetails: RegionWithIntersectionDetails[]
 ) {
-  const allPresenceItems =
-    regionsWithIntersectionDetails.flatMap(
+  const allPresenceItems = flatten(
+    regionsWithIntersectionDetails.map(
       withIntersection => withIntersection.region.data?.presence || []
     ) || []
+  )
   const [hiddenUsers, visibleUsers] = splitRight(
     allPresenceItems,
     allPresenceItems.length > MAX_AVATARS ? MAX_AVATARS - 1 : MAX_AVATARS

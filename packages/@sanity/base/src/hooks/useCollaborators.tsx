@@ -1,26 +1,13 @@
 import {useState, useEffect} from 'react'
-import {clients$} from 'part:@sanity/base/presence'
+import {collaborators$} from 'part:@sanity/base/presence'
 
 export default function useCollaborators() {
-  const [users, setUsers] = useState([])
+  const [collaborators, setCollaborators] = useState([])
   useEffect(() => {
-    const subscription = clients$.subscribe(clients => {
-      setUsers(
-        clients.map(client => {
-          return {
-            ...client,
-            sessions: client.sessions.map(session => ({
-              ...session,
-              state: session.state && session.state.find(state => state.namespace === 'formBuilder')
-            })),
-            status: client.sessions[0].type === 'sync' ? 'online' : 'inactive'
-          }
-        })
-      )
-    })
+    const subscription = collaborators$.subscribe(collaborators => setCollaborators(collaborators))
     return () => {
       subscription.unsubscribe()
     }
-  }, [clients$])
-  return users
+  }, [])
+  return collaborators
 }

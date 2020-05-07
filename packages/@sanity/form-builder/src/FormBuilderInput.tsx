@@ -9,9 +9,12 @@ import {Type, Marker} from './typedefs'
 
 const NO_MARKERS: Marker[] = []
 
-interface PresenceInfo {
-  identity: string
+interface DocumentPresence {
+  userId: string
+  sessionId: string
   path: string[]
+  lastActiveAt: string // iso date
+  state: {}
 }
 
 interface Props {
@@ -21,7 +24,7 @@ interface Props {
   onFocus: (arg0: Path) => void
   onBlur: () => void
   readOnly: boolean
-  presence?: PresenceInfo[]
+  presence?: DocumentPresence[]
   focusPath: Path
   markers: Marker[]
   level: number

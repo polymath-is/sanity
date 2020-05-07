@@ -28,7 +28,7 @@ interface PresenceRollCallEvent {
 type PresenceEvent<T> = PresenceSyncEvent<T> | PresenceDisconnectEvent | PresenceRollCallEvent
 
 type ReceivedEvent<T> = T & {
-  clientId: string
+  sessionId: string
   identity: string
   timestamp: string
 }
@@ -65,7 +65,7 @@ const messageToPresenceEvent = <State>(
     return {
       type: 'sync',
       identity,
-      clientId: message.clientId,
+      sessionId: message.sessionId,
       timestamp: new Date().toISOString(),
       state: message.state
     }
@@ -73,14 +73,14 @@ const messageToPresenceEvent = <State>(
     return {
       type: 'disconnect',
       identity,
-      clientId: message.clientId,
+      sessionId: message.sessionId,
       timestamp: new Date().toISOString()
     }
   } else if (message.type === 'rollCall') {
     return {
       type: 'rollCall',
       identity,
-      clientId: message.clientId,
+      sessionId: message.sessionId,
       timestamp: new Date().toISOString()
     }
   }
@@ -89,18 +89,18 @@ const messageToPresenceEvent = <State>(
 
 export const createReflectorTransport = <State>(
   channel: string,
-  clientId: string
+  sessionId: string
 ): [
   Observable<WelcomeEvent | ReceivedEvent<PresenceEvent<State>>>,
   (messages: PresenceEvent<State>[]) => Promise<void>
 ] => {
   const messages$ = listen<ReceivedEvent<PresenceEvent<State>>>(channel).pipe(
     map(toPresenceEvent),
-    doBeforeUnload(() => sendBeacon(channel, {type: 'disconnect', clientId}))
+    doBeforeUnload(() => sendBeacon(channel, {type: 'disconnect', sessionId}))
   )
 
   const sendMessages = messages =>
-    messages.forEach(message => send(channel, {...message, clientId}))
+    messages.forEach(message => send(channel, {...message, sessionId}))
 
   return [messages$, sendMessages]
 }

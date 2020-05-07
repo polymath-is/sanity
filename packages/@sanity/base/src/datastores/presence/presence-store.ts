@@ -15,19 +15,17 @@ import {groupBy, omit, flatten} from 'lodash'
 import {createReflectorTransport} from './message-transports/reflectorTransport'
 
 import userStore from '../user'
-import {PresentUser} from './types'
+import {GlobalPresence, PresenceLocation} from './types'
 
-export const CLIENT_ID = Math.random()
+// todo: consider using sessionStorage for this instead as it will survive page reloads
+// but need to figure out this means first:
+// Opening a page in a new tab or window creates a new session with the value of the top-level browsing context, which differs from how session cookies work.
+// https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage
+export const SESSION_ID = Math.random()
   .toString(32)
   .substring(2)
 
-type PresenceLocation = {
-  namespace: string
-  documentId?: string
-  path?: (string | {})[]
-}
-
-const [events$, sendMessages] = createReflectorTransport<PresenceLocation[]>('presence', CLIENT_ID)
+const [events$, sendMessages] = createReflectorTransport<PresenceLocation[]>('presence', SESSION_ID)
 
 type PrivacyType = 'anonymous' | 'private' | 'dataset' | 'visible'
 const privacy$ = new BehaviorSubject<PrivacyType>('visible')
@@ -66,16 +64,16 @@ const reportLocation$ = merge(
     }
   })
 )
-const purgeOld = clients => {
-  const oldIds = Object.keys(clients).filter(
-    id => new Date().getTime() - new Date(clients[id].timestamp).getTime() > 60 * 1000
+const purgeOld = sessions => {
+  const oldIds = Object.keys(sessions).filter(
+    id => new Date().getTime() - new Date(sessions[id].timestamp).getTime() > 60 * 1000
   )
-  return omit(clients, oldIds)
+  return omit(sessions, oldIds)
 }
 
-const purgeOld$ = timer(0, 10000).pipe(mapTo({type: 'purgeOld', clientId: CLIENT_ID}))
+const purgeOld$ = timer(0, 10000).pipe(mapTo({type: 'purgeOld', sessionId: SESSION_ID}))
 
-export const clients$ = merge(
+export const sessions$ = merge(
   events$.pipe(
     // tap(console.log),
     withLatestFrom(location$, privacy$),
@@ -90,26 +88,27 @@ export const clients$ = merge(
   purgeOld$,
   merge(reportLocation$).pipe(mergeMapTo(EMPTY))
 ).pipe(
-  scan((clients, event: any) => {
+  scan((sessions, event: any) => {
     if (event.type === 'welcome') {
       // i am connected and can safely request a rollcall
       requestRollCall()
-      return clients
+      return sessions
     }
     if (event.type === 'sync') {
-      return {...clients, [event.clientId]: event}
+      return {...sessions, [event.sessionId]: event}
     }
     if (event.type === 'disconnect') {
-      return omit(clients, event.clientId)
+      return omit(sessions, event.sessionId)
     }
     if (event.type === 'purgeOld') {
-      return purgeOld(clients)
+      return purgeOld(sessions)
     }
-    return clients
+    return sessions
   }, {}),
   startWith({}),
-  map(clients => Object.values(clients)),
-  map(clients => groupBy(clients, 'identity')),
+  tap(console.log),
+  map(sessions => Object.values(sessions)),
+  map(sessions => groupBy(sessions, 'identity')),
   map(grouped =>
     Object.keys(grouped).map(identity => {
       return {
@@ -117,24 +116,25 @@ export const clients$ = merge(
         sessions: grouped[identity].map((session: any) => omit(session, 'identity'))
       }
     })
-  ),
-  tap(console.log)
+  )
+  // tap(console.log)
 )
 
-export const presence$ = clients$.pipe(
+export const globalPresence$ = sessions$.pipe(
   mergeMap(grouped =>
     from(grouped).pipe(
       mergeMap(sess =>
         // @ts-ignore
         from(userStore.getUser(sess.identity)).pipe(
           map(
-            (user): PresentUser => ({
+            (user): GlobalPresence => ({
               // @ts-ignore
               user: user,
+              // @ts-ignore
               sessions: flatten(
                 // @ts-ignore
                 sess.sessions.map(s => ({
-                  sessionId: s.clientId,
+                  sessionId: s.sessionId,
                   locations: (s.state || []).map(state => ({
                     documentId: state.documentId,
                     path: state.path

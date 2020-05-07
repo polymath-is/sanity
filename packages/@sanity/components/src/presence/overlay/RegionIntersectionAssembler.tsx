@@ -2,7 +2,7 @@
 import * as React from 'react'
 import {createIntersectionObserver} from './intersectionObserver'
 import {tap} from 'rxjs/operators'
-import {THRESHOLD_BOTTOM, THRESHOLD_TOP, DEBUG} from './constants'
+import {THRESHOLD_BOTTOM, THRESHOLD_TOP, DEBUG} from '../constants'
 
 const OVERLAY_STYLE: React.CSSProperties = {
   position: 'absolute',

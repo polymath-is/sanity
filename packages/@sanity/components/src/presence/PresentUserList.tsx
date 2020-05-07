@@ -1,57 +1,38 @@
 /* eslint-disable react/no-multi-comp */
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import React from 'react'
-import {useId} from '@reach/auto-id'
-import styles from './CollaboratorList.css'
-import AvatarProvider from './UserAvatar'
+import styles from './presentUserList.css'
 import {MAX_AVATARS} from './constants'
-import {RegionReporter} from '@sanity/overlayer'
-import {Collaborator, Position} from './types'
+import {Position, PresentUser} from './types'
 import PopoverList from './PopoverList'
 import {splitRight} from './utils'
-import {uniqBy} from 'lodash'
 import StackCounter from './StackCounter'
 
 type ContainerProps = {
-  collaborators: Collaborator[]
+  presence: PresentUser[]
   position: Position
   avatarComponent: React.ComponentType<{userId: string; sessionId: string; position: Position}>
   children?: React.ReactNode
 }
 
-type RegionReporterProps = {
-  collaborators: Collaborator[]
-  position: Position
-}
-
-export default function PresenceContainerRegion({collaborators, position}: RegionReporterProps) {
-  const id = useId()
-
-  return (
-    <RegionReporter
-      id={id}
-      data={{collaborators, position, avatarComponent: AvatarProvider}}
-      component={CollaboratorList}
-    />
-  )
-}
-
 const AVATAR_WIDTH = 21
 
-function CollaboratorList({
-  collaborators,
+export function PresentUserList({
+  presence,
   position,
   avatarComponent: AvatarComponent
 }: ContainerProps) {
-  const [hiddenUsers, visibleUsers] = splitRight(
-    uniqBy(collaborators || [], collaborator => collaborator.user.id)
-  )
+  const [hiddenUsers, visibleUsers] = splitRight(presence, 1)
 
   const avatars = [
-    ...visibleUsers.map(user => ({
-      key: user.sessionId,
+    ...visibleUsers.map(presentUser => ({
+      key: presentUser.user.id,
       element: (
-        <AvatarComponent position={position} userId={user.identity} sessionId={user.sessionId} />
+        <AvatarComponent
+          position={position}
+          userId={presentUser.user.id}
+          sessionId={presentUser.user.id}
+        />
       )
     })),
     hiddenUsers.length >= MAX_AVATARS - 1
@@ -67,7 +48,7 @@ function CollaboratorList({
 
   return (
     <div className={styles.root}>
-      <PopoverList collaborators={collaborators} disabled={hiddenUsers.length <= 1}>
+      <PopoverList presence={presence} disabled={hiddenUsers.length <= 1}>
         <div className={styles.inner} style={{height: AVATAR_WIDTH, minWidth: width}}>
           {avatars.map((av, i) => (
             <div

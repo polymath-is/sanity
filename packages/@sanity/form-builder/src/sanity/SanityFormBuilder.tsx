@@ -4,8 +4,7 @@ import {FormBuilderInput} from '../FormBuilderInput'
 import {Marker, Type} from '../typedefs'
 import {Path} from '../typedefs/path'
 import * as gradientPatchAdapter from './utils/gradientPatchAdapter'
-import {Tracker} from '@sanity/overlayer'
-import {PresenceTransitionRenderer} from './PresenceTransitionRenderer'
+import {Overlay as PresenceOverlay} from '@sanity/components/presence'
 
 type PatchChannel = {
   subscribe: () => () => {}
@@ -63,7 +62,7 @@ export default class SanityFormBuilder extends React.Component<Props, {}> {
     } = this.props
     return (
       <SanityFormBuilderContext value={value} schema={schema} patchChannel={patchChannel}>
-        <Tracker component={PresenceTransitionRenderer}>
+        <PresenceOverlay>
           <FormBuilderInput
             type={type}
             onChange={this.handleChange}
@@ -79,7 +78,7 @@ export default class SanityFormBuilder extends React.Component<Props, {}> {
             ref={this.setInput}
             presence={presence}
           />
-        </Tracker>
+        </PresenceOverlay>
       </SanityFormBuilderContext>
     )
   }

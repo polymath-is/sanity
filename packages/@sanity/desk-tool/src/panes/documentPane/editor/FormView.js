@@ -8,7 +8,7 @@ import filterFieldFn$ from 'part:@sanity/desk-tool/filter-fields-fn?'
 import styles from '../Editor.css'
 import EditForm from './EditForm'
 import HistoryForm from './HistoryForm'
-import {setLocation} from 'part:@sanity/base/presence'
+import {setLocation} from 'part:@sanity/base/datastore/presence'
 
 const noop = () => undefined
 

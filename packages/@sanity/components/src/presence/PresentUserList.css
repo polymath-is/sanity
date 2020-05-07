@@ -1,8 +1,9 @@
 @import 'part:@sanity/base/theme/variables-style';
 
 .root {
-  display: flex;
-  position: relative;
+  display: inline-block;
+  width: 28px;
+  height: 28px;
 }
 
 .inner {

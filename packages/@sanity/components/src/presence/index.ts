@@ -1,5 +1,7 @@
 export {default as Avatar} from './AvatarCircle'
 export {default as AvatarProvider} from './UserAvatar'
 export {default as PopoverList} from './PopoverList'
-export {default as Container} from './CollaboratorList'
+export {default as Container} from './PopoverList'
 export {default as StackCounter} from './StackCounter'
+export {GlobalStatus} from './GlobalStatus'
+export {Overlay} from './overlay/Overlay'

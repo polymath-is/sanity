@@ -22,7 +22,7 @@ import styles from './styles/ItemValue.css'
 import {ArrayType, ItemValue} from './typedefs'
 import {Tracker} from '@sanity/overlayer'
 import {Container as PresenceContainer} from '@sanity/components/lib/presence'
-import {PresenceTransitionRenderer} from '../../sanity/PresenceTransitionRenderer'
+import {PresenceOverlay} from '@sanity/components/presence'
 
 const DragHandle = createDragHandle(() => (
   <span className={styles.dragHandle}>
@@ -229,9 +229,9 @@ export default class RenderItemValue extends React.PureComponent<Props> {
         onAction={this.handleDialogAction}
         showCloseButton={false}
       >
-        <Tracker component={PresenceTransitionRenderer}>
+        <PresenceOverlay>
           <DialogContent size="medium">{content}</DialogContent>
-        </Tracker>
+        </PresenceOverlay>
       </DefaultDialog>
     )
   }

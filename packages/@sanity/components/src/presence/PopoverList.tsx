@@ -2,13 +2,13 @@
 import React, {useRef, useState} from 'react'
 import styles from './PopoverList.css'
 import ListItem from './ListItem'
-import {Collaborator, Size} from './types'
+import {PresentUser, Size} from './types'
 import {Tooltip} from 'react-tippy'
 import CogIcon from 'part:@sanity/base/cog-icon'
 import {useId} from '@reach/auto-id'
 
 type Props = {
-  collaborators: Collaborator[]
+  presence: PresentUser[]
   avatarSize?: Size
   position?: 'top' | 'bottom'
   trigger?: 'mouseenter' | 'click' | 'manual'
@@ -20,7 +20,7 @@ type Props = {
 }
 
 export default function PopoverList({
-  collaborators = [],
+  presence = [],
   position = 'top',
   distance = 10,
   avatarSize,
@@ -58,25 +58,21 @@ export default function PopoverList({
       className={styles.inner}
       role="menu"
       id={elementId}
-      aria-label="Online collaborators"
+      aria-label="Online presentUsers"
       ref={menuRef}
       tabIndex={-1}
     >
-      {isGlobal && collaborators.length < 1 && (
+      {isGlobal && presence.length < 1 && (
         <div className={styles.header}>
           <h2 className={styles.title}>No one's here!</h2>
           <p className={styles.subtitle}>Invite more collaborators to see their online statuses.</p>
         </div>
       )}
-      {collaborators.length > 0 && (
+      {presence.length > 0 && (
         <ul className={styles.userList}>
-          {collaborators.map(collaborator => (
-            <li key={collaborator.user.id}>
-              <ListItem
-                collaborator={collaborator}
-                status={collaborator.status}
-                size={avatarSize}
-              />
+          {presence.map(presentUser => (
+            <li key={presentUser.user.id}>
+              <ListItem presentUser={presentUser} status={presentUser.status} size={avatarSize} />
             </li>
           ))}
         </ul>
@@ -109,10 +105,9 @@ export default function PopoverList({
         arrow
         theme="light"
         distance={distance}
-        className={styles.tooltip}
       >
         <button
-          aria-label={isOpen ? 'Close collaborator menu' : 'Open collaborator menu'}
+          aria-label={isOpen ? 'Close presentUser menu' : 'Open presentUser menu'}
           type="button"
           className={styles.button}
           aria-haspopup="true"

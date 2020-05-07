@@ -6,14 +6,10 @@ import * as React from 'react'
 import {CSSProperties} from 'react'
 import {RegionIntersectionAssembler} from './RegionIntersectionAssembler'
 import {groupBy, orderBy, flatten} from 'lodash'
-import {AvatarProvider, PopoverList, StackCounter} from '@sanity/components/lib/presence'
-import {DEBUG, THRESHOLD_TOP, MAX_AVATARS, AVATAR_WIDTH} from './constants'
-import {RegionWithIntersectionDetails} from './types'
-
-const splitRight = (array, index) => {
-  const idx = Math.max(0, array.length - index)
-  return [array.slice(0, idx), array.slice(idx)]
-}
+import {DEBUG, THRESHOLD_TOP, MAX_AVATARS, AVATAR_WIDTH} from '../constants'
+import {RegionWithIntersectionDetails} from '../types'
+import {AvatarProvider, PopoverList, StackCounter} from '..'
+import {splitRight} from '../utils'
 
 const ITEM_TRANSITION: CSSProperties = {
   transitionProperty: 'transform',
@@ -162,12 +158,7 @@ function renderDock(
         transform: `translate3d(${visibleUsers.length * -13}px, 0px, 0px)`
       }}
     >
-      <PopoverList
-        userList={allPresenceItems}
-        arrowPosition={position}
-        avatarSize="small"
-        distance={10}
-      >
+      <PopoverList presence={allPresenceItems} position={position} avatarSize="small" distance={10}>
         <StackCounter count={hiddenUsers.length} />
       </PopoverList>
     </div>
@@ -210,9 +201,9 @@ function renderDock(
       >
         <PopoverList
           disabled={allPresenceItems.length <= MAX_AVATARS}
-          userList={allPresenceItems}
+          presence={allPresenceItems}
           avatarSize="small"
-          arrowPosition={position}
+          position={position}
         >
           {[].concat(counter || []).concat(visibleItems)}
         </PopoverList>

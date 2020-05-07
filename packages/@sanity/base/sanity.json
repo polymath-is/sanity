@@ -387,12 +387,12 @@
       "path": "datastores/user"
     },
     {
-      "name": "part:@sanity/base/presence",
+      "name": "part:@sanity/base/datastore/presence",
       "path": "datastores/presence"
     },
     {
       "name": "part:@sanity/base/hooks/presence",
-      "path": "hooks/usePresence"
+      "path": "hooks/presence"
     },
     {
       "name": "part:@sanity/base/hooks/collaborators",

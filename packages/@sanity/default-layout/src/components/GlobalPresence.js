@@ -1,9 +1,8 @@
-import PresenceStatus from 'part:@sanity/components/presence/presence-status'
-import usePresence from 'part:@sanity/base/hooks/collaborators'
+import {GlobalStatus} from '@sanity/components/presence'
+import {useGlobalPresence} from 'part:@sanity/base/hooks/presence'
 import React from 'react'
 
 export function GlobalPresence() {
-  const collaborators = usePresence()
-  console.log(collaborators)
-  return <PresenceStatus collaborators={collaborators} />
+  const presence = useGlobalPresence()
+  return <GlobalStatus presence={presence} />
 }

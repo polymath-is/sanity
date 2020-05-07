@@ -13,8 +13,9 @@ import {
 } from 'rxjs/operators'
 import {groupBy, omit, flatten} from 'lodash'
 import {createReflectorTransport} from './message-transports/reflectorTransport'
-import {Collaborator} from '../../presence'
+
 import userStore from '../user'
+import {PresentUser} from './types'
 
 export const CLIENT_ID = Math.random()
   .toString(32)
@@ -119,16 +120,15 @@ export const clients$ = merge(
   ),
   tap(console.log)
 )
-const append = (list, item) => [...list, item]
 
-export const collaborators$ = clients$.pipe(
+export const presence$ = clients$.pipe(
   mergeMap(grouped =>
     from(grouped).pipe(
       mergeMap(sess =>
         // @ts-ignore
         from(userStore.getUser(sess.identity)).pipe(
           map(
-            (user): Collaborator => ({
+            (user): PresentUser => ({
               // @ts-ignore
               user: user,
               sessions: flatten(
@@ -149,3 +149,7 @@ export const collaborators$ = clients$.pipe(
     )
   )
 )
+
+export const documentPresence$ = (documentId: string) => {
+  // return presence$.pipe(filter())
+}

@@ -7,7 +7,7 @@ export interface User {
   imageUrl?: string
 }
 
-export type Collaborator = {
+export type PresentUser = {
   user: User
   status?: Status
   sessions?: Session[]

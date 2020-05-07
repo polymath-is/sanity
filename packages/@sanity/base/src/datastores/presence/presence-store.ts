@@ -15,7 +15,7 @@ import {groupBy, omit, flatten} from 'lodash'
 import {createReflectorTransport} from './message-transports/reflectorTransport'
 
 import userStore from '../user'
-import {GlobalPresence, PresenceLocation} from './types'
+import {GlobalPresence, PathElement, PresenceLocation} from './types'
 
 // todo: consider using sessionStorage for this instead as it will survive page reloads
 // but need to figure out this means first:
@@ -106,43 +106,60 @@ export const sessions$ = merge(
     return sessions
   }, {}),
   startWith({}),
-  tap(console.log),
   map(sessions => Object.values(sessions)),
   map(sessions => groupBy(sessions, 'identity')),
   map(grouped =>
     Object.keys(grouped).map(identity => {
       return {
         identity,
-        sessions: grouped[identity].map((session: any) => omit(session, 'identity'))
+        sessions: grouped[identity]
       }
     })
   )
-  // tap(console.log)
 )
+/*
+locations: flatten(
+            sess.sessions.map(s => ({
+              sessionId: s.sessionId,
+              locations: (s.state || []).map(state => ({
+                documentId: state.documentId,
+                path: state.path
+              }))
+            }))
+          )
+ */
+
+const concat = (prev, curr) => prev.concat(curr)
 
 export const globalPresence$ = sessions$.pipe(
-  mergeMap(grouped =>
+  switchMap(grouped =>
     from(grouped).pipe(
-      mergeMap(sess =>
+      map(entry => ({
+        userId: entry.identity,
+        status: 'online',
         // @ts-ignore
-        from(userStore.getUser(sess.identity)).pipe(
-          map(
-            (user): GlobalPresence => ({
-              // @ts-ignore
-              user: user,
-              // @ts-ignore
-              sessions: flatten(
-                // @ts-ignore
-                sess.sessions.map(s => ({
-                  sessionId: s.sessionId,
-                  locations: (s.state || []).map(state => ({
-                    documentId: state.documentId,
-                    path: state.path
-                  }))
-                }))
-              )
-            })
-          )
+        lastActiveAt: entry.sessions.sort()[0]?.timestamp,
+        locations: (entry.sessions || [])
+          // @ts-ignore
+          .map(s => s.state || [])
+          .reduce(concat, [])
+          .map(state => ({
+            type: state?.type,
+            documentId: state?.documentId,
+            path: state?.path
+          }))
+      })),
+      toArray()
+    )
+  ),
+  switchMap(presenceWithUserIds =>
+    from(presenceWithUserIds).pipe(
+      mergeMap(({userId, ...rest}) =>
+        from(userStore.getUser(userId)).pipe(
+          map(user => ({
+            user,
+            ...rest
+          }))
         )
       ),
       toArray()

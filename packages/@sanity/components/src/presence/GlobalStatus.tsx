@@ -5,12 +5,12 @@ import PopoverList from './PopoverList'
 import {MAX_AVATARS} from './constants'
 import {splitRight} from './utils'
 import StackCounter from './StackCounter'
-import {PresentUser} from './types'
+import {GlobalPresence} from './types'
 import UserAvatar from './UserAvatar'
 
 interface Props {
   projectId: string
-  presence: PresentUser[]
+  presence: GlobalPresence[]
 }
 
 export function GlobalStatus({projectId, presence}: Props) {

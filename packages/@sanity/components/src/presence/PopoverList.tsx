@@ -1,14 +1,14 @@
 /* eslint-disable react/no-multi-comp */
 import React, {useRef, useState} from 'react'
 import styles from './PopoverList.css'
-import ListItem from './ListItem'
-import {PresentUser, Size} from './types'
+import {GlobalPresence, Size, Status, User} from './types'
 import {Tooltip} from 'react-tippy'
 import CogIcon from 'part:@sanity/base/cog-icon'
 import {useId} from '@reach/auto-id'
+import GlobalPresenceListItem from './ListItem'
 
 type Props = {
-  presence: PresentUser[]
+  presence: GlobalPresence[]
   avatarSize?: Size
   position?: 'top' | 'bottom'
   trigger?: 'mouseenter' | 'click' | 'manual'
@@ -58,7 +58,7 @@ export default function PopoverList({
       className={styles.inner}
       role="menu"
       id={elementId}
-      aria-label="Online presentUsers"
+      aria-label="Online users"
       ref={menuRef}
       tabIndex={-1}
     >
@@ -70,9 +70,9 @@ export default function PopoverList({
       )}
       {presence.length > 0 && (
         <ul className={styles.userList}>
-          {presence.map(presentUser => (
-            <li key={presentUser.user.id}>
-              <ListItem presentUser={presentUser} status={presentUser.status} size={avatarSize} />
+          {presence.map(presence => (
+            <li key={presence.user.id}>
+              <GlobalPresenceListItem presence={presence} size={avatarSize} />
             </li>
           ))}
         </ul>

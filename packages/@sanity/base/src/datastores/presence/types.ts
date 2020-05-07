@@ -1,3 +1,5 @@
+import {User} from '../user/createUserStore'
+
 export type Status = 'online' | 'editing' | 'inactive'
 export type PathElement = string | number | {_key: string}
 
@@ -11,9 +13,8 @@ export interface Session {
 
 // (this is what each client typically exchanges over bifur)
 export interface PresenceLocation {
-  /* must be an unique id generated from the client, each time a message is received for a given id, it will replace any previous message associated with that id  */
-  id: string
-  documentId?: string
+  type: 'document'
+  documentId: string
   path: PathElement[]
   data: PresenceData
 }
@@ -31,14 +32,11 @@ interface DocumentPresence {
   data: PresenceData
 }
 
-export interface User {
-  id: string
-  displayName?: string
-  imageUrl?: string
-}
+export {User}
 
 export type GlobalPresence = {
-  user: User
-  status?: Status
-  sessions?: Session[]
+  userId: string
+  status: Status
+  lastActiveAt: LastActiveAt
+  locations: PresenceLocation[]
 }

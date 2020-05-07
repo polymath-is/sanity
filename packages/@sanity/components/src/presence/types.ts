@@ -50,3 +50,20 @@ export interface Location {
   documentId: string
   path: PathElement[]
 }
+
+// (this is what each client typically exchanges over bifur)
+export interface PresenceLocation {
+  type: 'document'
+  documentId: string
+  path: PathElement[]
+  data: PresenceData
+}
+
+type PresenceData = {[key: string]: any}
+
+export type GlobalPresence = {
+  user: User
+  status: Status
+  lastActiveAt: string
+  locations: PresenceLocation[]
+}

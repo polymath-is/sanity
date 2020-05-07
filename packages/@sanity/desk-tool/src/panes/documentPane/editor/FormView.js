@@ -72,13 +72,7 @@ export default class FormView extends React.PureComponent {
 
   handleFocus = path => {
     this.setState({focusPath: path})
-    setLocation([
-      {
-        namespace: 'formBuilder',
-        documentId: this.getCanonicalDocumentId(),
-        path
-      }
-    ])
+    setLocation([{type: 'document', documentId: this.getCanonicalDocumentId(), path}])
   }
 
   handleBlur = () => {

@@ -1,24 +1,28 @@
+/* eslint-disable @typescript-eslint/no-use-before-define,react/no-multi-comp */
 import React from 'react'
-import {User} from './types'
-import {split, splitRight} from './utils'
-import {uniqBy, sortBy} from 'lodash'
+import {splitRight} from './utils'
+import {sortBy, uniqBy} from 'lodash'
 import {AVATAR_WIDTH, MAX_AVATARS} from './constants'
-import {PopoverList, StackCounter} from './index'
+import {StackCounter} from './index'
 import styles from './FieldPresence.css'
 import UserAvatar from './UserAvatar'
-
-interface FieldPresence {
-  user: User
-  sessionId: string
-  lastActiveAt: string
-}
+import {PresenceRegion} from './Region'
+import {FieldPresence as FieldPresenceT} from './types'
 
 interface Props {
-  presence: FieldPresence[]
-  position?: any
+  presence: FieldPresenceT[]
 }
 
-export function FieldPresence({presence, position}: Props) {
+export function FieldPresence({presence}: Props) {
+  return <PresenceRegion presence={presence} component={FieldPresenceInner} />
+}
+
+interface InnerProps {
+  presence: FieldPresenceT[]
+  position: Position
+}
+
+function FieldPresenceInner({presence, position}: InnerProps) {
   const sorted = sortBy(
     uniqBy(presence || [], item => item.user.id),
     presence => presence.lastActiveAt
@@ -38,15 +42,17 @@ export function FieldPresence({presence, position}: Props) {
       : null
   ].filter(Boolean)
 
+  const width = 8 + (AVATAR_WIDTH - 8) * MAX_AVATARS
+  const right = width - AVATAR_WIDTH
   return (
     <div className={styles.root}>
-      <div className={styles.inner} style={{height: AVATAR_WIDTH}}>
+      <div className={styles.inner} style={{width: width}}>
         {avatars.map((av, i) => (
           <div
             key={av.key}
             style={{
               position: 'absolute',
-              transform: `translate3d(${i * -AVATAR_WIDTH}px, 0px, 0px)`,
+              transform: `translate3d(${right - (AVATAR_WIDTH - 8) * i}px, 0px, 0px)`,
               transitionProperty: 'transform',
               transitionDuration: '200ms',
               transitionTimingFunction: 'cubic-bezier(0.85, 0, 0.15, 1)',

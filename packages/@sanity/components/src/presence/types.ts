@@ -51,6 +51,12 @@ export interface Location {
   path: PathElement[]
 }
 
+export interface FieldPresence {
+  user: User
+  sessionId: string
+  lastActiveAt: string
+}
+
 // (this is what each client typically exchanges over bifur)
 export interface PresenceLocation {
   type: 'document'

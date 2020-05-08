@@ -4,23 +4,17 @@ import AvatarProvider from './UserAvatar'
 import React from 'react'
 import {PopoverList} from './index'
 import {RegionReporter} from '@sanity/overlayer'
-import {Position, PresentUser} from './types'
+import {FieldPresence, Position, PresentUser} from './types'
 
-type RegionReporterProps = {
+type RegionProps = {
   presence: PresentUser[]
   position: Position
 }
 
-export function PresenceRegion({presence, component, data}) {
-  return <RegionReporter id={useId()} data={{presence, ...data}} component={component} />
+type Props = {
+  presence: FieldPresence[]
+  component: React.ComponentType<{presence: FieldPresence[]}>
 }
-
-export function PresenceContainerRegion({presence}: RegionReporterProps) {
-  return (
-    <PresenceRegion
-      presence={presence}
-      data={{avatarComponent: AvatarProvider}}
-      component={PopoverList}
-    />
-  )
+export function PresenceRegion({presence, component}: {presence: FieldPresence[]}) {
+  return <RegionReporter id={useId()} data={{presence}} component={component} />
 }

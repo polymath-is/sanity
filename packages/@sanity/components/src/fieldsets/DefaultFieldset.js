@@ -7,9 +7,9 @@ import ArrowDropDown from 'part:@sanity/base/arrow-drop-down'
 import ValidationStatus from 'part:@sanity/components/validation/status'
 import ValidationList from 'part:@sanity/components/validation/list'
 import AnimateHeight from 'react-animate-height'
-import {Container as PresenceContainer} from '../presence'
 import FieldStatus from './FieldStatus'
 import {FOCUS_TERMINATOR} from '@sanity/util/paths'
+import {FieldPresence} from '../presence'
 
 export default class Fieldset extends React.Component {
   static propTypes = {
@@ -170,7 +170,7 @@ export default class Fieldset extends React.Component {
                 )}
               </div>
               <FieldStatus>
-                <PresenceContainer presence={presence} />
+                <FieldPresence presence={presence} />
                 <ValidationStatus markers={markers} onClick={this.handleToggleValidationList} />
               </FieldStatus>
             </div>

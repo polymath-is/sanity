@@ -1,22 +1,13 @@
 import {useState, useEffect} from 'react'
-import {globalPresence$} from '../datastores/presence'
-import {filter, map} from 'rxjs/operators'
+import {documentPresence} from '../datastores/presence'
 
-export function useDocumentPresence(documentId: string) {
+export function useDocumentPresence(documentId) {
   const [presence, setPresence] = useState([])
-  // useEffect(() => {
-  //   const subscription = presence$
-  //     .pipe(
-  //       map(presence =>
-  //         presence.filter(item =>
-  //           item.sessions.some(sess => sess.locations.some(loc => loc.documentId === documentId))
-  //         )
-  //       )
-  //     )
-  //     .subscribe(collaborators => setPresence(collaborators))
-  //   return () => {
-  //     subscription.unsubscribe()
-  //   }
-  // }, [])
+  useEffect(() => {
+    const subscription = documentPresence(documentId).subscribe(setPresence)
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [documentId])
   return presence
 }

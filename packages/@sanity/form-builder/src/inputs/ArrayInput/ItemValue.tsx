@@ -20,8 +20,7 @@ import * as PathUtils from '@sanity/util/paths'
 import ConfirmButton from './ConfirmButton'
 import styles from './styles/ItemValue.css'
 import {ArrayType, ItemValue} from './typedefs'
-import {Tracker} from '@sanity/overlayer'
-import {Container as PresenceContainer} from '@sanity/components/lib/presence'
+import {FieldPresence} from '@sanity/components/lib/presence'
 import {PresenceOverlay} from '@sanity/components/presence'
 
 const DragHandle = createDragHandle(() => (
@@ -283,7 +282,7 @@ export default class RenderItemValue extends React.PureComponent<Props> {
 
         <div className={isGrid ? styles.functionsInGrid : styles.functions}>
           <div>
-            <PresenceContainer presence={presence} />
+            <FieldPresence presence={presence} />
             <ValidationStatus markers={scopedValidation} />
           </div>
           {value._ref && (

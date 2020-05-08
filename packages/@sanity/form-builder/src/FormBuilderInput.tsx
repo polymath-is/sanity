@@ -5,7 +5,7 @@ import {Path, PathSegment} from './typedefs/path'
 import PatchEvent from './PatchEvent'
 import generateHelpUrl from '@sanity/generate-help-url'
 import * as PathUtils from '@sanity/util/paths.js'
-import {Type, Marker} from './typedefs'
+import {Type, Marker, FormBuilderPresence} from './typedefs'
 
 const NO_MARKERS: Marker[] = []
 
@@ -24,7 +24,7 @@ interface Props {
   onFocus: (arg0: Path) => void
   onBlur: () => void
   readOnly: boolean
-  presence?: DocumentPresence[]
+  presence?: FormBuilderPresence[]
   focusPath: Path
   markers: Marker[]
   level: number
@@ -219,6 +219,7 @@ export class FormBuilderInput extends React.Component<Props> {
     const childFocusPath = this.getChildFocusPath()
     const isLeaf = childFocusPath.length === 0 || childFocusPath[0] === PathUtils.FOCUS_TERMINATOR
     const leafProps = isLeaf ? {} : {focusPath: childFocusPath}
+
     const childPresenceInfo = (presence || [])
       .filter(presence => {
         return PathUtils.startsWith(path, presence.path)

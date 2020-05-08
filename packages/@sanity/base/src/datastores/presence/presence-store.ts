@@ -1,21 +1,25 @@
-import {EMPTY, merge, of, timer, BehaviorSubject, from} from 'rxjs'
+import {BehaviorSubject, defer, EMPTY, from, merge, of, timer} from 'rxjs'
 import {
+  flatMap,
   map,
   mapTo,
-  scan,
-  startWith,
-  tap,
-  withLatestFrom,
-  mergeMapTo,
-  switchMap,
   mergeMap,
-  toArray
+  mergeMapTo,
+  scan,
+  shareReplay,
+  startWith,
+  switchMap,
+  tap,
+  toArray,
+  withLatestFrom,
+  publishReplay,
+  refCount
 } from 'rxjs/operators'
-import {groupBy, omit, flatten} from 'lodash'
+import {groupBy, omit} from 'lodash'
 import {createReflectorTransport} from './message-transports/reflectorTransport'
 
 import userStore from '../user'
-import {GlobalPresence, PathElement, PresenceLocation} from './types'
+import {PresenceLocation} from './types'
 
 // todo: consider using sessionStorage for this instead as it will survive page reloads
 // but need to figure out this means first:
@@ -71,11 +75,11 @@ const purgeOld = sessions => {
   return omit(sessions, oldIds)
 }
 
-const purgeOld$ = timer(0, 10000).pipe(mapTo({type: 'purgeOld', sessionId: SESSION_ID}))
+// const purgeOld$ = timer(0, 10000).pipe(mapTo({type: 'purgeOld', sessionId: SESSION_ID}))
+const purgeOld$ = EMPTY
 
-export const sessions$ = merge(
+const real$ = merge(
   events$.pipe(
-    // tap(console.log),
     withLatestFrom(location$, privacy$),
     mergeMap(([event, location, privacy]) => {
       if (event.type === 'rollCall' && privacy === 'visible') {
@@ -87,7 +91,30 @@ export const sessions$ = merge(
   ),
   purgeOld$,
   merge(reportLocation$).pipe(mergeMapTo(EMPTY))
-).pipe(
+)
+
+const mock$ = defer(() =>
+  from(
+    'pqSMwf6hH,p-xRcD0xpnFA8R,p-rwpCNNWtVnlz,pnLYqNfv5,priDVVmy8,p0NFOU0j8,pTDl2jw8d,pH1ZwC8i9,pZSfuDqFB,pHMeQnTse,p-Syl5Bs4nLHcr,ppzqWGWNb,pDQYzJbyS,pZyoPHKUs,pQzJQHSWI,p4Tyi2Be5,pb9vii060,pE8yhOisw,pgqD5dmam,pNIRxUDCs,p-gTOWmkXiXc5m,p-BJNcObnSkvpZ,p7Fd2C6Cj,p-ef4VzXpTUVfe,p3exSgYCx,pbIQRYViC,p8GJaTEhN,p27ewL8aM,p-tOOQeqfD8JLu,p3udQwtNP,p-KSTLBLgxkgR1,pAxG0VlQB,pYg97z75S,pdLr4quHv,pkJXiDgg6,pkl4UAKcA'
+      .split(',')
+      .slice(0, 4)
+      .map((id, n) => ({
+        type: 'sync',
+        identity: id,
+        sessionId: id + n,
+        timestamp: new Date().toISOString(),
+        state: [
+          {
+            type: 'document',
+            documentId: 'presence-test',
+            path: ['translations', 'nn']
+          }
+        ]
+      }))
+  )
+)
+
+export const sessions$ = defer(() => merge(mock$, real$)).pipe(
   scan((sessions, event: any) => {
     if (event.type === 'welcome') {
       // i am connected and can safely request a rollcall
@@ -103,6 +130,7 @@ export const sessions$ = merge(
     if (event.type === 'purgeOld') {
       return purgeOld(sessions)
     }
+    console.warn('Unknown event', event)
     return sessions
   }, {}),
   startWith({}),
@@ -117,17 +145,6 @@ export const sessions$ = merge(
     })
   )
 )
-/*
-locations: flatten(
-            sess.sessions.map(s => ({
-              sessionId: s.sessionId,
-              locations: (s.state || []).map(state => ({
-                documentId: state.documentId,
-                path: state.path
-              }))
-            }))
-          )
- */
 
 const concat = (prev, curr) => prev.concat(curr)
 
@@ -167,6 +184,22 @@ export const globalPresence$ = sessions$.pipe(
   )
 )
 
-export const documentPresence$ = (documentId: string) => {
-  // return presence$.pipe(filter())
+export const documentPresence = (documentId: string) => {
+  return globalPresence$.pipe(
+    switchMap(globalPresence =>
+      from(globalPresence).pipe(
+        flatMap(presenceItem =>
+          (presenceItem.locations || [])
+            .filter(item => item.documentId === documentId)
+            .map(state => ({
+              user: presenceItem.user,
+              status: presenceItem.status,
+              lastActiveAt: presenceItem.lastActiveAt,
+              path: state?.path || []
+            }))
+        ),
+        toArray()
+      )
+    )
+  )
 }

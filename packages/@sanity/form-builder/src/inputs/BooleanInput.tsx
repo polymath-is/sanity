@@ -4,7 +4,7 @@ import Checkbox from 'part:@sanity/components/toggles/checkbox'
 import PatchEvent, {set} from '../PatchEvent'
 import ValidationStatus from 'part:@sanity/components/validation/status'
 import FieldStatus from '@sanity/components/lib/fieldsets/FieldStatus'
-import {Container as PresenceContainer} from '@sanity/components/lib/presence'
+import {FieldPresence} from '@sanity/components/lib/presence'
 import {Type} from '../typedefs'
 type Props = {
   type: Type
@@ -69,7 +69,7 @@ export default class BooleanInput extends React.Component<Props> {
           />
         )}
         <FieldStatus position="top">
-          <PresenceContainer presence={presence} />
+          <FieldPresence presence={presence} />
           <ValidationStatus markers={markers} onClick={this.handleToggleValidationList} />
         </FieldStatus>
       </div>

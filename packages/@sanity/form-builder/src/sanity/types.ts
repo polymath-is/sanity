@@ -1,3 +1,5 @@
+import {Path} from '../typedefs/path'
+
 export type RegionWithIntersectionDetails = {
   distanceTop: number
   distanceBottom: number

@@ -1,7 +1,7 @@
 import React from 'react'
 import SanityFormBuilderContext from './SanityFormBuilderContext'
 import {FormBuilderInput} from '../FormBuilderInput'
-import {Marker, Type} from '../typedefs'
+import {FormBuilderPresence, Marker, Type} from '../typedefs'
 import {Path} from '../typedefs/path'
 import * as gradientPatchAdapter from './utils/gradientPatchAdapter'
 import {Overlay as PresenceOverlay} from '@sanity/components/presence'
@@ -23,7 +23,7 @@ type Props = {
   onBlur: () => void
   autoFocus: boolean
   focusPath: Path
-  presence: any
+  presence: FormBuilderPresence[]
 }
 
 export default class SanityFormBuilder extends React.Component<Props, {}> {

@@ -29,6 +29,7 @@ export function PresentUserList({
       key: presentUser.user.id,
       element: (
         <AvatarComponent
+          // @ts-ignore
           position={position}
           userId={presentUser.user.id}
           sessionId={presentUser.user.id}
@@ -48,6 +49,7 @@ export function PresentUserList({
 
   return (
     <div className={styles.root}>
+      // @ts-ignore
       <PopoverList presence={presence} disabled={hiddenUsers.length <= 1}>
         <div className={styles.inner} style={{height: AVATAR_WIDTH, minWidth: width}}>
           {avatars.map((av, i) => (

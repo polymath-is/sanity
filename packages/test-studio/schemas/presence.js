@@ -45,8 +45,8 @@ export default {
       description:
         'This uses a custom presence component that assigns a random animal emoji to each user',
       type: 'object',
-      fields: range(20).map(n => ({type: 'string', name: `fieldNo${n}`}))
-      // inputComponent: CustomInputWithDialogOverlay
+      fields: range(20).map(n => ({type: 'string', name: `fieldNo${n}`})),
+      inputComponent: CustomInputWithDialogOverlay
     },
     {
       name: 'translations',

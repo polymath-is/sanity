@@ -107,7 +107,8 @@ const mock$ = defer(() =>
           {
             type: 'document',
             documentId: 'presence-test',
-            path: ['translations', 'nn']
+            // path: ['prologue']
+            path: ['customInputWithDefaultPresence', 'row3', 'cell3']
           }
         ]
       }))

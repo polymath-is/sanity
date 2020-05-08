@@ -21,7 +21,7 @@ import ConfirmButton from './ConfirmButton'
 import styles from './styles/ItemValue.css'
 import {ArrayType, ItemValue} from './typedefs'
 import {FieldPresence} from '@sanity/components/lib/presence'
-import {PresenceOverlay} from '@sanity/components/presence'
+import {Overlay as PresenceOverlay} from '@sanity/components/presence'
 
 const DragHandle = createDragHandle(() => (
   <span className={styles.dragHandle}>

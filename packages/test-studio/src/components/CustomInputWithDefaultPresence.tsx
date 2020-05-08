@@ -24,7 +24,7 @@ export function CustomInputWithDefaultPresence(props) {
               return (
                 <div key={cell + row} style={{position: 'relative'}}>
                   <div>
-                    <div style={{position: 'absolute', left: -4}}>
+                    <div style={{position: 'absolute', left: -24}}>
                       {/* Show presence items for this particular cell */}
                       <FieldPresence presence={fieldPresence} />
                     </div>

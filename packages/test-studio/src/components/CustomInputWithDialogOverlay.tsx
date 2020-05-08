@@ -1,5 +1,5 @@
 import React from 'react'
-import {Container as Presence, Overlay as PresenceOverlay} from '@sanity/components/presence'
+import {FieldPresence, Overlay as PresenceOverlay} from '@sanity/components/presence'
 import Dialog from 'part:@sanity/components/dialogs/default'
 import DialogContent from 'part:@sanity/components/dialogs/content'
 import Button from 'part:@sanity/components/buttons/default'
@@ -28,7 +28,9 @@ export function CustomInputWithDialogOverlay(props) {
                       value={(value || {})[field.name]}
                       onFocus={() => onFocus([field.name])}
                     />
-                    <Presence presence={presence.filter(byFieldName(field.name))} />
+                    <div style={{width: 20}}>
+                      <FieldPresence presence={presence.filter(byFieldName(field.name))} />
+                    </div>
                   </div>
                 ))}
               </div>

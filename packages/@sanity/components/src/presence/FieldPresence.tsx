@@ -21,10 +21,7 @@ interface Props {
 export function FieldPresence({presence, position}: Props) {
   const sorted = sortBy(
     uniqBy(presence || [], item => item.user.id),
-    i1 => {
-      console.log(i1.lastActiveAt)
-      return new Date(i1.lastActiveAt).getTime()
-    }
+    presence => presence.lastActiveAt
   )
   const [hidden, visible] = splitRight(sorted, MAX_AVATARS)
 
@@ -49,7 +46,7 @@ export function FieldPresence({presence, position}: Props) {
             key={av.key}
             style={{
               position: 'absolute',
-              transform: `translate3d(${-AVATAR_WIDTH + i * -(AVATAR_WIDTH - 8)}px, 0px, 0px)`,
+              transform: `translate3d(${i * -AVATAR_WIDTH}px, 0px, 0px)`,
               transitionProperty: 'transform',
               transitionDuration: '200ms',
               transitionTimingFunction: 'cubic-bezier(0.85, 0, 0.15, 1)',

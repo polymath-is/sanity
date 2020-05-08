@@ -15,7 +15,7 @@ import PrimaryGroup from './PrimaryGroup'
 import styles from './Toolbar.css'
 import {Path} from '../../../typedefs/path'
 import {Marker} from '../../../typedefs'
-import {PortableTextEditor, EditorSelection} from '@sanity/portable-text-editor'
+import {PortableTextEditor, EditorSelection, HotkeyOptions} from '@sanity/portable-text-editor'
 
 const BREAKPOINT_SCREEN_MEDIUM = 512
 
@@ -27,6 +27,7 @@ const denyFocusChange = (event: React.SyntheticEvent<HTMLDivElement>): void => {
 
 type Props = {
   editor: PortableTextEditor
+  hotkeys: HotkeyOptions
   isFullscreen: boolean
   markers: Marker[]
   onFocus: (path: Path) => void
@@ -35,22 +36,22 @@ type Props = {
 }
 
 type ToolbarState = {
-  collapsePrimaryIsOpen: boolean
-  collapsePrimary: boolean
-  showValidationTooltip: boolean
   collapsedGroups: string[]
-  lastContentWidth: number
+  collapsePrimary: boolean
+  collapsePrimaryIsOpen: boolean
   isMobile: boolean
+  lastContentWidth: number
+  showValidationTooltip: boolean
 }
 
 export default class Toolbar extends React.Component<Props, ToolbarState> {
   state = {
-    collapsePrimaryIsOpen: false,
-    collapsePrimary: false,
-    showValidationTooltip: false,
     collapsedGroups: [],
+    collapsePrimary: false,
+    collapsePrimaryIsOpen: false,
+    isMobile: false,
     lastContentWidth: -1,
-    isMobile: false
+    showValidationTooltip: false
   }
   _primaryToolbar: RefObject<HTMLDivElement> = React.createRef()
 

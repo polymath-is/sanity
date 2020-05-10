@@ -15,6 +15,6 @@ type Props = {
   presence: FieldPresence[]
   component: React.ComponentType<{presence: FieldPresence[]}>
 }
-export function PresenceRegion({presence, component}: {presence: FieldPresence[]}) {
+export function PresenceRegion({presence, component}: Props) {
   return <RegionReporter id={useId()} data={{presence}} component={component} />
 }

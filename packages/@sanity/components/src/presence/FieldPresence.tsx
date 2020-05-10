@@ -7,7 +7,7 @@ import {StackCounter} from './index'
 import styles from './FieldPresence.css'
 import UserAvatar from './UserAvatar'
 import {PresenceRegion} from './Region'
-import {FieldPresence as FieldPresenceT} from './types'
+import {FieldPresence as FieldPresenceT, Position} from './types'
 
 interface Props {
   presence: FieldPresenceT[]

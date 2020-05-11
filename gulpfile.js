@@ -162,7 +162,7 @@ const watchJSAndAssets = parallel(
 function studioTask(name, port) {
   return series(
     buildJSAndAssets,
-    parallel(buildTS, watchJSAndAssets, watchTS, function runStudio() {
+    parallel(buildTS, watchJSAndAssets, function runStudio() {
       log(`Starting ${name}…`)
       runSanityStart(path.join(__dirname, 'packages', name), port).pipe(
         through((data, enc, cb) => {

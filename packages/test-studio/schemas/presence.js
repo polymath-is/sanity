@@ -18,6 +18,20 @@ export default {
       validation: Rule => Rule.min(5).max(100)
     },
     {
+      name: 'nested',
+      type: 'object',
+      fields: [
+        {
+          name: 'first',
+          type: 'string'
+        },
+        {
+          name: 'second',
+          type: 'string'
+        }
+      ]
+    },
+    {
       name: 'customInputWithDefaultPresence',
       title: 'Custom input with default presence',
       description:
@@ -74,6 +88,20 @@ export default {
       name: 'prologue',
       title: 'Prologue',
       type: 'string'
+    },
+    {
+      name: 'address',
+      type: 'object',
+      fields: [
+        {
+          name: 'street',
+          type: 'string'
+        },
+        {
+          name: 'country',
+          type: 'string'
+        }
+      ]
     },
     {
       name: 'reviews',

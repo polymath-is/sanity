@@ -106,9 +106,11 @@ const mock$ = defer(() =>
         state: [
           {
             type: 'document',
-            // documentId: 'presence-test',
-            documentId: 'foo-bar',
-            path: ['bestFriend']
+            documentId: 'presence-test',
+            // documentId: 'foo-bar',
+            // path: ['bestFriend']
+            path: ['nested', Math.random() > 0.5 ? 'first' : 'second']
+            // path: ['address', Math.random() > 0.5 ? 'country' : 'street']
             // path: ['customInputWithDefaultPresence', 'row3', 'cell3']
           }
         ]

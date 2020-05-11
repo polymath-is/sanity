@@ -5,11 +5,11 @@
 import * as React from 'react'
 import {CSSProperties} from 'react'
 import {RegionIntersectionAssembler} from './RegionIntersectionAssembler'
-import {groupBy, orderBy, flatten} from 'lodash'
-import {DEBUG, THRESHOLD_TOP, MAX_AVATARS, AVATAR_WIDTH} from '../constants'
+import {groupBy, orderBy, flatten, sortBy} from 'lodash'
+import {DEBUG, THRESHOLD_TOP, MAX_AVATARS, AVATAR_SIZE, THRESHOLD_BOTTOM} from '../constants'
 import {RegionWithIntersectionDetails} from '../types'
 import {AvatarProvider, PopoverList, StackCounter} from '..'
-import {splitRight} from '../utils'
+import {split, splitRight} from '../utils'
 
 const ITEM_TRANSITION: CSSProperties = {
   transitionProperty: 'transform',
@@ -138,15 +138,14 @@ function renderDock(
   position: 'top' | 'bottom',
   regionsWithIntersectionDetails: RegionWithIntersectionDetails[]
 ) {
+  const dir = position === 'top' ? 1 : -1
   const allPresenceItems = flatten(
-    regionsWithIntersectionDetails.map(
+    sortBy(regionsWithIntersectionDetails, r => r.region.rect.top * dir).map(
       withIntersection => withIntersection.region.data?.presence || []
     ) || []
   )
-  const [hiddenUsers, visibleUsers] = splitRight(
-    allPresenceItems,
-    allPresenceItems.length > MAX_AVATARS ? MAX_AVATARS - 1 : MAX_AVATARS
-  )
+
+  const [hiddenUsers, visibleUsers] = splitRight(allPresenceItems, MAX_AVATARS)
 
   const counter = hiddenUsers.length > 0 && (
     <div
@@ -171,7 +170,7 @@ function renderDock(
       style={{
         ...ITEM_TRANSITION,
         position: 'absolute',
-        transform: `translate3d(${(visibleUsers.length - 1 - i) * -(AVATAR_WIDTH - 8)}px, 0px, 0px)`
+        transform: `translate3d(${(visibleUsers.length - 1 - i) * -(AVATAR_SIZE - 8)}px, 0px, 0px)`
       }}
     >
       <AvatarProvider position={position} userId={avatar.identity} {...avatar} />
@@ -185,7 +184,7 @@ function renderDock(
       style={{
         position: 'sticky',
         top: arrowHeight,
-        bottom: position === 'bottom' ? AVATAR_WIDTH + arrowHeight : 0,
+        bottom: position === 'bottom' ? AVATAR_SIZE + arrowHeight : 0,
         right: 0,
         left: 0,
         display: 'flex',
@@ -195,8 +194,8 @@ function renderDock(
       <div
         style={{
           position: 'absolute',
-          right: AVATAR_WIDTH,
-          height: AVATAR_WIDTH
+          right: AVATAR_SIZE,
+          height: AVATAR_SIZE
         }}
       >
         <PopoverList
@@ -224,6 +223,7 @@ function renderDock(
 
 // The avatar will move to the right when this close (in pixels) to the top
 const topDistanceRightMovementThreshold = 12
+const bottomDistanceRightMovementThreshold = 15
 
 function renderInside(regionsWithIntersectionDetails: RegionWithSpacerHeight[], maxRight: number) {
   return regionsWithIntersectionDetails.map(withIntersection => {
@@ -231,6 +231,7 @@ function renderInside(regionsWithIntersectionDetails: RegionWithSpacerHeight[], 
       maxRight - withIntersection.region.rect.width - withIntersection.region.rect.left
     const originalLeft = withIntersection.region.rect.left
     const distanceTop = withIntersection.distanceTop + THRESHOLD_TOP
+    const distanceBottom = withIntersection.distanceBottom + THRESHOLD_BOTTOM
 
     const {component: Component, data} = withIntersection.region
     return (
@@ -241,14 +242,15 @@ function renderInside(regionsWithIntersectionDetails: RegionWithSpacerHeight[], 
             ...ITEM_STYLE,
             ...ITEM_TRANSITION,
             transform: `translate3d(${originalLeft +
-              (distanceTop < topDistanceRightMovementThreshold
+              (distanceTop < topDistanceRightMovementThreshold ||
+              distanceBottom < bottomDistanceRightMovementThreshold
                 ? distanceMaxLeft
                 : 0)}px, 0px, 0px)`,
             height: withIntersection.region.rect.height,
             width: withIntersection.region.rect.width
           }}
         >
-          <DebugValue value={() => distanceTop}>
+          <DebugValue value={() => `⤒${distanceTop} | ${distanceBottom}⤓`}>
             {Component ? <Component {...data} /> : null}
           </DebugValue>
         </div>
@@ -267,11 +269,15 @@ function DebugValue(props: any) {
       <span
         style={{
           top: 0,
-          left: 0,
+          left: -15,
+          fontSize: 11,
+          right: -15,
+          textAlign: 'center',
+          height: AVATAR_SIZE,
           color: 'white',
-          backgroundColor: 'rgba(0, 0, 0, 0.2)',
-          padding: 4,
-          position: 'absolute'
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          position: 'absolute',
+          zIndex: 1000
         }}
       >
         {props.value()}

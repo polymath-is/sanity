@@ -2,7 +2,7 @@
 import React from 'react'
 import {splitRight} from './utils'
 import {sortBy, uniqBy} from 'lodash'
-import {AVATAR_WIDTH, MAX_AVATARS} from './constants'
+import {AVATAR_SIZE, MAX_AVATARS} from './constants'
 import {StackCounter} from './index'
 import styles from './FieldPresence.css'
 import UserAvatar from './UserAvatar'
@@ -42,8 +42,8 @@ function FieldPresenceInner({presence, position}: InnerProps) {
       : null
   ].filter(Boolean)
 
-  const width = 8 + (AVATAR_WIDTH - 8) * MAX_AVATARS
-  const right = width - AVATAR_WIDTH
+  const width = 8 + (AVATAR_SIZE - 8) * MAX_AVATARS
+  const right = width - AVATAR_SIZE
   return (
     <div className={styles.root}>
       <div className={styles.inner} style={{width: width}}>
@@ -52,7 +52,7 @@ function FieldPresenceInner({presence, position}: InnerProps) {
             key={av.key}
             style={{
               position: 'absolute',
-              transform: `translate3d(${right - (AVATAR_WIDTH - 8) * i}px, 0px, 0px)`,
+              transform: `translate3d(${right - (AVATAR_SIZE - 8) * i}px, 0px, 0px)`,
               transitionProperty: 'transform',
               transitionDuration: '200ms',
               transitionTimingFunction: 'cubic-bezier(0.85, 0, 0.15, 1)',

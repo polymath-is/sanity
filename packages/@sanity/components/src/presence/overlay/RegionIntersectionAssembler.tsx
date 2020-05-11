@@ -49,7 +49,11 @@ export function RegionIntersectionAssembler(props: Props) {
   const {regions, render, children, trackerRef} = props
 
   const io = React.useMemo(
-    () => createIntersectionObserver({threshold: [0, 0.01, 0.1, 0.2, 0.5, 0.8, 0.9, 0.99, 1]}),
+    () =>
+      createIntersectionObserver({
+        rootMargin: '10px',
+        threshold: [0, 0.01, 0.1, 0.2, 0.5, 0.8, 0.9, 0.99, 1]
+      }),
     []
   )
 

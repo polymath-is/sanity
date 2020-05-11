@@ -236,6 +236,9 @@ function renderInside(regionsWithIntersectionDetails: RegionWithSpacerHeight[], 
     const originalLeft = withIntersection.region.rect.left
     const {distanceTop, distanceBottom} = withIntersection
 
+    const nearTop = distanceTop + SNAP_TO_DOCK_DISTANCE_TOP < SLIDE_RIGHT_THRESHOLD_TOP
+    const nearBottom = distanceBottom + SNAP_TO_DOCK_DISTANCE_BOTTOM < SLIDE_RIGHT_THRESHOLD_BOTTOM
+
     const {component: Component, data} = withIntersection.region
     return (
       <React.Fragment key={withIntersection.region.id}>
@@ -245,10 +248,7 @@ function renderInside(regionsWithIntersectionDetails: RegionWithSpacerHeight[], 
             ...ITEM_STYLE,
             ...ITEM_TRANSITION,
             transform: `translate3d(${originalLeft +
-              (distanceTop + SNAP_TO_DOCK_DISTANCE_TOP < SLIDE_RIGHT_THRESHOLD_TOP ||
-              distanceBottom + SNAP_TO_DOCK_DISTANCE_BOTTOM < SLIDE_RIGHT_THRESHOLD_BOTTOM
-                ? distanceMaxLeft
-                : 0)}px, 0px, 0px)`,
+              (nearTop || nearBottom ? distanceMaxLeft : 0)}px, 0px, 0px)`,
             height: withIntersection.region.rect.height,
             width: withIntersection.region.rect.width
           }}

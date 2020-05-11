@@ -6,7 +6,8 @@ import {
   SNAP_TO_DOCK_DISTANCE_BOTTOM,
   SNAP_TO_DOCK_DISTANCE_TOP,
   DEBUG,
-  INTERSECTION_ELEMENT_PADDING
+  INTERSECTION_ELEMENT_PADDING,
+  INTERSECTION_THRESHOLDS
 } from '../constants'
 
 const OVERLAY_STYLE: React.CSSProperties = {
@@ -56,7 +57,7 @@ export function RegionIntersectionAssembler(props: Props) {
   const io = React.useMemo(
     () =>
       createIntersectionObserver({
-        threshold: [0, 0.01, 0.1, 0.2, 0.5, 0.8, 0.9, 0.99, 1]
+        threshold: INTERSECTION_THRESHOLDS
       }),
     []
   )

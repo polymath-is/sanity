@@ -2,7 +2,12 @@
 import * as React from 'react'
 import {createIntersectionObserver} from './intersectionObserver'
 import {tap} from 'rxjs/operators'
-import {THRESHOLD_BOTTOM, THRESHOLD_TOP, DEBUG} from '../constants'
+import {
+  SNAP_TO_DOCK_DISTANCE_BOTTOM,
+  SNAP_TO_DOCK_DISTANCE_TOP,
+  DEBUG,
+  INTERSECTION_ELEMENT_PADDING
+} from '../constants'
 
 const OVERLAY_STYLE: React.CSSProperties = {
   position: 'absolute',
@@ -51,7 +56,6 @@ export function RegionIntersectionAssembler(props: Props) {
   const io = React.useMemo(
     () =>
       createIntersectionObserver({
-        rootMargin: '10px',
         threshold: [0, 0.01, 0.1, 0.2, 0.5, 0.8, 0.9, 0.99, 1]
       }),
     []
@@ -74,15 +78,30 @@ export function RegionIntersectionAssembler(props: Props) {
               return null
             }
 
-            const distanceTop = intersection.boundingClientRect.top - top.boundingClientRect.bottom
+            const {bottom: boundsBottom, top: boundsTop} = intersection.boundingClientRect
 
-            const distanceBottom =
-              bottom.boundingClientRect.bottom - intersection.boundingClientRect.bottom
+            const aboveTop = intersection.boundingClientRect.top < top.boundingClientRect.bottom
+            const belowBottom = intersection.boundingClientRect.top < bottom.boundingClientRect.top
+
+            const distanceTop = intersection.isIntersecting
+              ? boundsTop - (intersection.intersectionRect.top - INTERSECTION_ELEMENT_PADDING)
+              : aboveTop
+              ? -top.boundingClientRect.bottom
+              : bottom.boundingClientRect.top
+
+            const distanceBottom = intersection.isIntersecting
+              ? -(
+                  boundsBottom -
+                  (intersection.intersectionRect.bottom + INTERSECTION_ELEMENT_PADDING)
+                )
+              : belowBottom
+              ? bottom.boundingClientRect.top
+              : -top.boundingClientRect.bottom
 
             const position =
-              distanceTop < -THRESHOLD_TOP
+              distanceTop < SNAP_TO_DOCK_DISTANCE_TOP
                 ? 'top'
-                : distanceBottom < -THRESHOLD_BOTTOM
+                : distanceBottom < SNAP_TO_DOCK_DISTANCE_BOTTOM
                 ? 'bottom'
                 : 'inside'
             return {
@@ -123,8 +142,8 @@ export function RegionIntersectionAssembler(props: Props) {
                 ...OVERLAY_ITEM_STYLE,
                 width: forceWidth ? 1 : region.rect.width,
                 left: region.rect.left - (forceWidth ? 1 : 0),
-                top: region.rect.top - 30,
-                height: region.rect.height + 60,
+                top: region.rect.top - INTERSECTION_ELEMENT_PADDING,
+                height: region.rect.height + INTERSECTION_ELEMENT_PADDING * 2,
                 visibility: DEBUG ? 'visible' : 'hidden'
               }}
             />

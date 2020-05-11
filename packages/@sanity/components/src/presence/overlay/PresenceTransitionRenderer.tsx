@@ -5,11 +5,19 @@
 import * as React from 'react'
 import {CSSProperties} from 'react'
 import {RegionIntersectionAssembler} from './RegionIntersectionAssembler'
-import {groupBy, orderBy, flatten, sortBy} from 'lodash'
-import {DEBUG, THRESHOLD_TOP, MAX_AVATARS, AVATAR_SIZE, THRESHOLD_BOTTOM} from '../constants'
+import {flatten, groupBy, orderBy, sortBy} from 'lodash'
+import {
+  AVATAR_SIZE,
+  DEBUG,
+  MAX_AVATARS,
+  SLIDE_RIGHT_THRESHOLD_BOTTOM,
+  SLIDE_RIGHT_THRESHOLD_TOP,
+  SNAP_TO_DOCK_DISTANCE_BOTTOM,
+  SNAP_TO_DOCK_DISTANCE_TOP
+} from '../constants'
 import {RegionWithIntersectionDetails} from '../types'
 import {AvatarProvider, PopoverList, StackCounter} from '..'
-import {split, splitRight} from '../utils'
+import {splitRight} from '../utils'
 
 const ITEM_TRANSITION: CSSProperties = {
   transitionProperty: 'transform',
@@ -221,17 +229,12 @@ function renderDock(
 //   )
 // }
 
-// The avatar will move to the right when this close (in pixels) to the top
-const topDistanceRightMovementThreshold = 12
-const bottomDistanceRightMovementThreshold = 15
-
 function renderInside(regionsWithIntersectionDetails: RegionWithSpacerHeight[], maxRight: number) {
   return regionsWithIntersectionDetails.map(withIntersection => {
     const distanceMaxLeft =
       maxRight - withIntersection.region.rect.width - withIntersection.region.rect.left
     const originalLeft = withIntersection.region.rect.left
-    const distanceTop = withIntersection.distanceTop + THRESHOLD_TOP
-    const distanceBottom = withIntersection.distanceBottom + THRESHOLD_BOTTOM
+    const {distanceTop, distanceBottom} = withIntersection
 
     const {component: Component, data} = withIntersection.region
     return (
@@ -242,8 +245,8 @@ function renderInside(regionsWithIntersectionDetails: RegionWithSpacerHeight[], 
             ...ITEM_STYLE,
             ...ITEM_TRANSITION,
             transform: `translate3d(${originalLeft +
-              (distanceTop < topDistanceRightMovementThreshold ||
-              distanceBottom < bottomDistanceRightMovementThreshold
+              (distanceTop + SNAP_TO_DOCK_DISTANCE_TOP < SLIDE_RIGHT_THRESHOLD_TOP ||
+              distanceBottom + SNAP_TO_DOCK_DISTANCE_BOTTOM < SLIDE_RIGHT_THRESHOLD_BOTTOM
                 ? distanceMaxLeft
                 : 0)}px, 0px, 0px)`,
             height: withIntersection.region.rect.height,

@@ -1,4 +1,13 @@
-import {BehaviorSubject, defer, EMPTY, from, interval, merge, Observable} from 'rxjs'
+import {
+  BehaviorSubject,
+  defer,
+  EMPTY,
+  from,
+  interval,
+  merge,
+  Observable,
+  MonoTypeOperatorFunction
+} from 'rxjs'
 import {
   debounceTime,
   filter,
@@ -26,6 +35,7 @@ import {
   StateEvent,
   TransportEvent
 } from './message-transports/transport'
+import {mock$} from './mock-events'
 
 // todo: consider using sessionStorage for this instead as it will survive page reloads
 // but need to figure out this means first:
@@ -48,7 +58,7 @@ export const reportLocation = (locations: PresenceLocation[]) =>
 
 const requestRollCall = () => sendMessage({type: 'rollCall'})
 
-const debug = (...args: any[]) => source$ =>
+const debug = <T>(...args: any[]): MonoTypeOperatorFunction<T> => source$ =>
   source$.pipe(tap(value => console.log(...[...args, value])))
 
 const rollCallRequests$ = presenceEvents$.pipe(
@@ -62,14 +72,13 @@ const rollCallReplies$ = merge(locationChange, reportLocationInterval$, rollCall
   debounceTime(200),
   withLatestFrom(locationChange),
   switchMap(([, location]) => reportLocation(location)),
-  debug('reported location'),
   mergeMapTo(EMPTY)
 )
 
 // This is my rollcall to other clients
-const initialRollCall = defer(() => from(requestRollCall()).pipe(take(1), mergeMapTo(EMPTY)))
+const initialRollCall$ = defer(() => from(requestRollCall()).pipe(take(1), mergeMapTo(EMPTY)))
 
-const syncEvent$ = merge(initialRollCall, presenceEvents$).pipe(
+const syncEvent$ = merge(initialRollCall$, presenceEvents$).pipe(
   filter(
     (event: TransportEvent): event is StateEvent | DisconnectEvent =>
       event.type === 'state' || event.type === 'disconnect'
@@ -77,7 +86,7 @@ const syncEvent$ = merge(initialRollCall, presenceEvents$).pipe(
   share()
 )
 
-const states$ = syncEvent$.pipe(
+const states$ = merge(syncEvent$, mock$).pipe(
   scan(
     (keyed, event) =>
       event.type === 'disconnect'

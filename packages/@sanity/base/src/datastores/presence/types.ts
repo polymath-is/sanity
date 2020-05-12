@@ -16,11 +16,9 @@ export interface PresenceLocation {
   type: 'document'
   documentId: string
   path: PathElement[]
-  data: PresenceData
 }
 
 type LastActiveAt = string // iso date
-type PresenceData = {[key: string]: any}
 
 // These are the data prepared and made ready for different types of UI components to use
 // Presence data prepared for a single document
@@ -29,7 +27,6 @@ interface DocumentPresence {
   sessionId: string
   path: PathElement[]
   lastActiveAt: LastActiveAt
-  data: PresenceData
 }
 
 export {User}

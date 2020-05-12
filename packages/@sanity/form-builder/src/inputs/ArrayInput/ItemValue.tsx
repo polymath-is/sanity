@@ -20,8 +20,7 @@ import * as PathUtils from '@sanity/util/paths'
 import ConfirmButton from './ConfirmButton'
 import styles from './styles/ItemValue.css'
 import {ArrayType, ItemValue} from './typedefs'
-import {FieldPresence} from '@sanity/components/lib/presence'
-import {Overlay as PresenceOverlay} from '@sanity/components/presence'
+import {FieldPresence, Overlay as PresenceOverlay} from '@sanity/components/presence'
 
 const DragHandle = createDragHandle(() => (
   <span className={styles.dragHandle}>
@@ -281,10 +280,8 @@ export default class RenderItemValue extends React.PureComponent<Props> {
         </div>
 
         <div className={isGrid ? styles.functionsInGrid : styles.functions}>
-          <div>
-            <FieldPresence presence={presence} />
-            <ValidationStatus markers={scopedValidation} />
-          </div>
+          <FieldPresence presence={presence} />
+          <ValidationStatus markers={scopedValidation} />
           {value._ref && (
             <IntentLink className={styles.linkToReference} intent="edit" params={{id: value._ref}}>
               <LinkIcon />

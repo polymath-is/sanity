@@ -2,7 +2,7 @@
 
 .root {
   display: flex;
-  position: relative;
+  min-height: 21px;
 }
 
 .inner {

@@ -32,6 +32,15 @@ export default {
       ]
     },
     {
+      name: 'array',
+      type: 'array',
+      of: [
+        {
+          type: 'string'
+        }
+      ]
+    },
+    {
       name: 'customInputWithDefaultPresence',
       title: 'Custom input with default presence',
       description:

@@ -24,12 +24,6 @@ const ITEM_TRANSITION: CSSProperties = {
   transitionDuration: '200ms',
   transitionTimingFunction: 'cubic-bezier(0.85, 0, 0.15, 1)'
 }
-const ITEM_STYLE: CSSProperties = {
-  position: 'sticky',
-  pointerEvents: 'all',
-  top: 0,
-  bottom: 0
-}
 
 const bottom = rect => rect.top + rect.height
 
@@ -125,7 +119,9 @@ export function PresenceTransitionRenderer(props: Props) {
         )
         const grouped = group(regionsWithIntersectionDetails)
         const topSpacing = sum(grouped.top.map(n => n.region.rect.height + n.spacerHeight))
-        const bottomSpacing = sum(grouped.bottom.map(n => n.region.rect.height + n.spacerHeight))
+        const bottomSpacing = sum(
+          [...grouped.inside, ...grouped.bottom].map(n => n.region.rect.height + n.spacerHeight)
+        )
         return (
           <>
             {[
@@ -242,15 +238,16 @@ function renderInside(regionsWithIntersectionDetails: RegionWithSpacerHeight[], 
     const {component: Component, data} = withIntersection.region
     return (
       <React.Fragment key={withIntersection.region.id}>
-        <Spacer height={withIntersection.spacerHeight} />
         <div
           style={{
-            ...ITEM_STYLE,
+            position: 'absolute',
+            pointerEvents: 'all',
             ...ITEM_TRANSITION,
             transform: `translate3d(${originalLeft +
               (nearTop || nearBottom ? distanceMaxLeft : 0)}px, 0px, 0px)`,
             height: withIntersection.region.rect.height,
-            width: withIntersection.region.rect.width
+            width: withIntersection.region.rect.width,
+            top: withIntersection.region.rect.top
           }}
         >
           <DebugValue value={() => `⤒${distanceTop} | ${distanceBottom}⤓`}>

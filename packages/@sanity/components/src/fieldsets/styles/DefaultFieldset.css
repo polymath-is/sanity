@@ -6,20 +6,10 @@
   outline: none;
 }
 
-.root .root {
-  /* nested inside itself */
-  margin: 0;
-}
-
-.root + .root {
-  /* Margin between fieldsets */
-  margin-top: var(--medium-padding);
-}
-
 .fieldWrapper {
   display: grid;
   grid-template-columns: 1fr;
-  grid-gap: var(--large-padding);
+  grid-gap: var(--large-padding) var(--medium-padding);
 }
 
 .fieldset {
@@ -59,19 +49,19 @@
 @media (--screen-medium) {
   .columns4 .fieldWrapper {
     display: grid;
-    grid-gap: var(--medium-padding);
+    grid-gap: var(--large-padding) var(--medium-padding);
     grid-template-columns: repeat(4, 1fr);
   }
 
   .columns3 .fieldWrapper {
     display: grid;
-    grid-gap: var(--medium-padding);
+    grid-gap: var(--large-padding) var(--medium-padding);
     grid-template-columns: repeat(3, 1fr);
   }
 
   .columns2 .fieldWrapper {
     display: grid;
-    grid-gap: var(--medium-padding);
+    grid-gap: var(--large-padding) var(--medium-padding);
     grid-template-columns: repeat(2, 1fr);
   }
 }
@@ -92,7 +82,6 @@
   position: relative;
   display: block;
   background-color: var(--fieldset-bg);
-  transition: all 0.1s linear;
 
   @nest .transparent & {
     background-color: transparent;
@@ -168,26 +157,6 @@
   padding: 0;
   user-select: none;
   cursor: default;
-
-  @nest .level2 & {
-    font-size: var(--font-size-base);
-    text-transform: none;
-  }
-
-  @nest .level3 & {
-    font-size: var(--font-size-base);
-    text-transform: none;
-  }
-
-  @nest .level4 & {
-    font-size: var(--font-size-base);
-    text-transform: none;
-  }
-
-  @nest .level5 & {
-    font-size: var(--font-size-base);
-    text-transform: none;
-  }
 }
 
 .legend + .description {
@@ -209,7 +178,7 @@
 .canFocus > .fieldset > .inner > .content,
 .canFocus > .fieldset > .inner > .animateHeight > .content {
   padding: var(--small-padding);
-  border-radius: var(--border-radius-large);
+  border-radius: var(--border-radius-medium);
   box-shadow: var(--fieldset-box-shadow);
 
   @media (--screen-medium) {
@@ -223,7 +192,7 @@
   box-shadow: var(--fieldset-box-shadow);
   padding: var(--small-padding);
   border: var(--fieldset-border);
-  border-radius: var(--border-radius-large);
+  border-radius: var(--border-radius-medium);
 
   @media (--screen-medium) {
     padding: var(--medium-padding);
@@ -235,7 +204,7 @@
   background-color: var(--fieldset-bg);
   box-shadow: var(--fieldset-box-shadow);
   padding: var(--small-padding);
-  border-radius: var(--border-radius-large);
+  border-radius: var(--border-radius-medium);
   border: var(--fieldset-border);
 
   @media (--screen-medium) {

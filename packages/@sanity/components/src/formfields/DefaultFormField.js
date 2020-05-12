@@ -1,4 +1,4 @@
-/* eslint-disable complexity */
+import classNames from 'classnames'
 import PropTypes from 'prop-types'
 import React from 'react'
 
@@ -6,7 +6,6 @@ import styles from 'part:@sanity/components/formfields/default-style'
 import DefaultLabel from 'part:@sanity/components/labels/default'
 import ValidationStatus from 'part:@sanity/components/validation/status'
 import ValidationList from 'part:@sanity/components/validation/list'
-import AnimateHeight from 'react-animate-height'
 
 export default class DefaultFormField extends React.PureComponent {
   static propTypes = {
@@ -26,8 +25,15 @@ export default class DefaultFormField extends React.PureComponent {
   }
 
   static defaultProps = {
+    children: undefined,
+    className: undefined,
+    description: undefined,
+    label: undefined,
+    labelFor: undefined,
     level: 1,
-    markers: []
+    inline: false,
+    markers: [],
+    wrapped: false
   }
 
   state = {
@@ -49,7 +55,7 @@ export default class DefaultFormField extends React.PureComponent {
       children,
       inline,
       wrapped,
-      className,
+      className: classNameProp,
       markers
     } = this.props
 
@@ -57,14 +63,15 @@ export default class DefaultFormField extends React.PureComponent {
 
     const levelClass = `level_${level}`
 
+    const className = classNames(
+      classNameProp,
+      inline ? styles.inline : styles.block,
+      styles[levelClass],
+      wrapped && styles.wrapped
+    )
+
     return (
-      <div
-        className={`
-          ${inline ? styles.inline : styles.block}
-          ${styles[levelClass] || ''}
-          ${wrapped ? styles.wrapped : ''}
-          ${className || ''}`}
-      >
+      <div className={className}>
         <label className={styles.inner} htmlFor={labelFor}>
           {label && (
             <div className={styles.header}>
@@ -83,13 +90,13 @@ export default class DefaultFormField extends React.PureComponent {
               </div>
             </div>
           )}
-          <AnimateHeight
-            height={showValidationMessages ? 'auto' : 0}
-            contentClassName={styles.validationList}
-            animateOpacity
-          >
-            <ValidationList markers={markers} />
-          </AnimateHeight>
+
+          {showValidationMessages && (
+            <div contentClassName={styles.validationList}>
+              <ValidationList markers={markers} />
+            </div>
+          )}
+
           <div className={styles.content}>{children}</div>
         </label>
       </div>

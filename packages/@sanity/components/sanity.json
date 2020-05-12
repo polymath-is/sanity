@@ -946,6 +946,10 @@
     },
     {
       "implements": "part:@sanity/base/component",
+      "path": "autocomplete/story.js"
+    },
+    {
+      "implements": "part:@sanity/base/component",
       "path": "buttons/story.js"
     },
     {
@@ -1095,6 +1099,10 @@
     {
       "implements": "part:@sanity/components/tabs/tab-panel",
       "path": "tabs/TabPanel.js"
+    },
+    {
+      "implements": "part:@sanity/components/storybook",
+      "path": "storybook/index.js"
     }
   ]
 }

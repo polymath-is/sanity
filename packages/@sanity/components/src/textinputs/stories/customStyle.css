@@ -12,6 +12,8 @@
 .input {
   position: relative;
   z-index: 1;
+  width: 100%;
+  box-sizing: border-box;
 
   @nest .disabled & {
     background-color: red;

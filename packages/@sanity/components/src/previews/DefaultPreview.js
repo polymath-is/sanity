@@ -89,12 +89,11 @@ class DefaultPreview extends React.PureComponent {
           </div>
         )}
         {children && <div className={styles.children}>{children}</div>}
-        {typeof progress === 'number' &&
-          progress > -1 && (
-            <div className={styles.progress}>
-              <div className={styles.progressBar} style={{width: `${progress}%`}} />
-            </div>
-          )}
+        {typeof progress === 'number' && progress > -1 && (
+          <div className={styles.progress}>
+            <div className={styles.progressBar} style={{width: `${progress}%`}} />
+          </div>
+        )}
       </div>
     )
   }

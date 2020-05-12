@@ -8,7 +8,7 @@ import ValidationStatus from 'part:@sanity/components/validation/status'
 import ValidationList from 'part:@sanity/components/validation/list'
 import AnimateHeight from 'react-animate-height'
 
-export default class Fieldset extends React.Component {
+export default class Fieldset extends React.PureComponent {
   static propTypes = {
     description: PropTypes.string,
     legend: PropTypes.string.isRequired,
@@ -30,12 +30,19 @@ export default class Fieldset extends React.Component {
   }
 
   static defaultProps = {
+    children: undefined,
+    className: '',
+    columns: undefined,
+    description: undefined,
     level: 1,
     fieldset: {},
-    markers: [],
-    className: '',
     isCollapsed: false,
-    isCollapsible: false // can collapsing be toggled by user?
+    isCollapsible: false, // can collapsing be toggled by user?
+    markers: [],
+    onFocus: undefined,
+    styles: undefined,
+    tabIndex: undefined,
+    transparent: undefined
   }
 
   constructor(props) {
@@ -71,6 +78,7 @@ export default class Fieldset extends React.Component {
 
   handleToggleValidationList = event => {
     this.setState({
+      // eslint-disable-next-line react/no-access-state-in-setstate
       showValidationList: !this.state.showValidationList
     })
   }

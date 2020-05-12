@@ -5,27 +5,21 @@ import styles from './styles/DefaultBadge.modules.css'
 
 export default class DefaultBadge extends React.PureComponent {
   static propTypes = {
-    color: PropTypes.oneOf([undefined, 'success', 'warning', 'danger', 'info', 'neutral']),
-    inverted: PropTypes.bool,
-    faded: PropTypes.bool,
-    children: PropTypes.node,
+    color: PropTypes.oneOf([undefined, 'success', 'warning', 'danger', 'info']),
+    children: PropTypes.node.isRequired,
     title: PropTypes.string
   }
 
   static defaultProps = {
     color: undefined,
-    inverted: false
+    title: undefined
   }
 
   render() {
-    const {color, inverted, children, title, faded} = this.props
+    const {color, children, title} = this.props
+
     return (
-      <span
-        className={inverted ? styles.inverted : styles.default}
-        data-color={color}
-        data-faded={faded}
-        title={title}
-      >
+      <span className={styles.root} data-color={color} title={title}>
         {children}
       </span>
     )

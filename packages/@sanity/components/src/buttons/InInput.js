@@ -1,3 +1,5 @@
+/* eslint-disable complexity */
+
 import PropTypes from 'prop-types'
 import React from 'react'
 import Ink from 'react-ink'
@@ -5,7 +7,7 @@ import styles from 'part:@sanity/components/buttons/in-input-style'
 import Spinner from 'part:@sanity/components/loading/spinner'
 import {omit} from 'lodash'
 
-export default class InInputButton extends React.Component {
+export default class InInputButton extends React.PureComponent {
   static propTypes = {
     kind: PropTypes.oneOf(['add', 'danger', 'colored', 'secondary']),
     onClick: PropTypes.func,
@@ -20,6 +22,12 @@ export default class InInputButton extends React.Component {
   }
 
   static defaultProps = {
+    className: undefined,
+    colored: false,
+    disabled: false,
+    kind: undefined,
+    inverted: false,
+    loading: false,
     ripple: true,
     icon() {
       return null

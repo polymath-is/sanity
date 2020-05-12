@@ -5,7 +5,7 @@
   align-items: center;
   border-radius: var(--border-radius-small);
   /* Optimised for 11px */
-  padding: calc(1 / 11 * 1em) calc(3 / 11 * 1em);
+  padding: 1px 3px;
   line-height: calc(12 / 11);
   text-transform: uppercase;
   font-weight: 600;
@@ -15,17 +15,9 @@
   border: 1px solid transparent;
   transform: translateZ(0);
   cursor: default;
-}
-
-.root + .root {
-  margin-left: var(--extra-small-padding--em);
-}
-
-.default {
-  composes: root;
-  background-color: var(--text-color);
-  border-color: var(--text-color);
-  color: color(var(--text-color) contrast(100%));
+  background-color: var(--gray);
+  border-color: var(--gray);
+  color: var(--white);
 
   @nest &[data-color='success'] {
     background-color: var(--state-success-color);
@@ -49,64 +41,5 @@
     background-color: var(--state-danger-color);
     border-color: var(--state-danger-color);
     color: var(--state-danger-color--inverted);
-  }
-
-  @nest &[data-color='neutral'] {
-    background-color: var(--gray);
-    border-color: var(--gray);
-    color: var(--white);
-  }
-}
-
-.inverted {
-  composes: root;
-  color: inherit;
-  background-color: transparent;
-  border-color: currentColor;
-
-  @nest &[data-color='success'] {
-    border-color: var(--state-success-color--faded);
-    color: var(--state-success-color--strong);
-
-    @nest &[data-faded='true'] {
-      color: var(--state-success-color--faded);
-    }
-  }
-
-  @nest &[data-color='info'] {
-    border-color: var(--state-info-color--faded);
-    color: var(--state-info-color--strong);
-
-    @nest &[data-faded='true'] {
-      color: var(--state-info-color--faded);
-    }
-  }
-
-  @nest &[data-color='warning'] {
-    border-color: var(--state-warning-color--faded);
-    color: var(--state-warning-color--strong);
-
-    @nest &[data-faded='true'] {
-      border-color: var(--state-warning-color--faded);
-    }
-  }
-
-  @nest &[data-color='danger'] {
-    border-color: var(--state-danger-color--faded);
-    color: var(--state-danger-color--strong);
-
-    @nest &[data-faded='true'] {
-      color: var(--state-danger-color--faded);
-    }
-  }
-
-  @nest &[data-color='neutral'] {
-    border-color: var(--gray-light);
-    color: var(--gray);
-
-    @nest &[data-faded='true'] {
-      border-color: var(--gray-light);
-      color: var(--gray-light);
-    }
   }
 }

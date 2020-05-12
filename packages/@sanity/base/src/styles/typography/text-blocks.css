@@ -25,7 +25,8 @@
 
 .small {
   composes: base;
-  font-size: var(--font-size-small);
+  font-size: var(--font-size-xsmall);
+  line-height: 15px;
 }
 
 .description {
